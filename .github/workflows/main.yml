@@ -31,12 +31,3 @@ jobs:
           
       - name: execute py script # run sj-gobierno.py to get the latest data
         run: python DailyNews_html.py
-        
-      - name: commit files
-        run: |
-          git commit -m "update data" -a
-          
-      - name: push changes
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          branch: main
