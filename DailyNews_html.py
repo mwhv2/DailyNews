@@ -89,7 +89,7 @@ except ConnectionError:
 A = [0,2,4,6,8]
 B = [1,3,5,7,9]
 Text = ""
-for i in range(5):
+for i in range(int(len(response['articles'])/2)):
     r1 = response['articles'][A[i]]
     r2 = response['articles'][B[i]]
     Text = Text + f"""
@@ -114,7 +114,7 @@ for i in range(5):
     """
 
 Science_Text = ""
-for i in range(5):
+for i in range(int(len(s_res['articles'])/2)):
     r1 = s_res['articles'][A[i]]
     r2 = s_res['articles'][B[i]]
     Science_Text = Science_Text + f"""
@@ -139,7 +139,7 @@ for i in range(5):
     """
 
 Fr_Text = ""
-for i in range(5):
+for i in range(int(len(fr_res['articles'])/2)):
     r1 = fr_res['articles'][A[i]]
     r2 = fr_res['articles'][B[i]]
     Fr_Text = Fr_Text + f"""
@@ -164,7 +164,7 @@ for i in range(5):
     """
 
 Tech_Text = ""
-for i in range(5):
+for i in range(int(len(t_res['articles'])/2)):
     r1 = t_res['articles'][A[i]]
     r2 = t_res['articles'][B[i]]
     Tech_Text = Tech_Text + f"""
