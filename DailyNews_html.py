@@ -79,7 +79,7 @@ fig.write_html("NWSforecast.html")
 # Get most recent screenshot of the Sun at 171 Ang.
 current = now1.strftime("%Y-%m-%dT%H:%M:%SZ")
 try:
-    ide = requests.get(f"https://api.helioviewer.org/v2/getClosestImage/?date={current}&sourceId=10", timeout=0.001)
+    ide = requests.get(f"https://api.helioviewer.org/v2/getClosestImage/?date={current}&sourceId=10")
     d = ide.json()['date'].replace(' ','T')
     Sun_im = f"https://api.helioviewer.org/v2/takeScreenshot/?date={d}Z&imageScale=5&layers=[SDO,AIA,AIA,171,1,100]&x0=0&y0=0&width=500&height=500&display=true"
 except ConnectionError:
