@@ -5,7 +5,7 @@ name: Run Script
 # Controls when the workflow will run
 on:
   schedule:
-    - cron: '0 11,16,22,1 * * *'
+    - cron: '24,0,0,0 0,11,16,22 * * *'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -22,7 +22,7 @@ jobs:
       - name: setup python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.7.7'
+          python-version: '3.8.10'
           
       - name: install python packages
         run: |
