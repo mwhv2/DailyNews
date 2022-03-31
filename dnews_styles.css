@@ -1,0 +1,89 @@
+.head1 {
+    font-family: serif;
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    padding-top: 10px;
+}
+.head2 {
+    font-size: 17px;
+    text-align: center;;
+    margin-bottom: 15px;
+}
+body {
+    margin: 0 auto;
+    background-position: center;
+    background-size: contain;
+}
+table {
+  font-family: arial, sans-serif;
+  border-collapse: separate;
+  border-spacing: 10px;
+  width: 100%;
+}
+td, th {
+  border: 2px solid #dddddd;
+  border-radius: 10px;
+  text-align: left;
+  padding: 8px;
+}
+.sidenav {
+  height: 100%; /* Full-height: remove this if you want "auto" height */
+  width: 10%; /* Set the width of the sidebar */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: #111; /* Black */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 20px;
+}
+
+/* The navigation menu links */
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 20px;
+  color: #f1f1f1;
+  display: block;
+}
+.sidenav p {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 10px;
+  color: #818181;
+  position: relative;
+}
+footer {
+    width: 100%;
+    bottom: 0;
+    background-color: #111;
+    color: #fff;
+    position: relative;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+}
+.body_sec {
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.body_sec a:active {
+    color: black;
+    text-decoration: none;
+}
+.body_sec a:link {
+    color: black;
+    text-decoration: none;
+}
+.body_sec a:hover {
+    color: black;
+    text-decoration: underline;
+}
+.body_sec a:visited {
+    color: black;
+    text-decoration: none;
+}
