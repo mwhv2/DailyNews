@@ -15,7 +15,7 @@ update = now1.strftime("%H:%M")
 now = now1.strftime("%A, %B %d, %Y")
 
 # This API key is for NewsAPI. Documentation here: https://newsapi.org/docs
-key = os.getenv('API_KEY')
+key = os.environ.get('API_KEY')
 
 # For top headlines and science in the US
 #re1_url = f"https://newsapi.org/v2/top-headlines?country=us&pageSize=10&apiKey={key}"
