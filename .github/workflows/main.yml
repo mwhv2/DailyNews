@@ -29,9 +29,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: Setup Env Variable
+	env:
+	  API_KEY: ${{ secrets.API_KEY }}
           
       - name: execute py script 
-        run: python DailyNews_html.py
+        run: python DailyNews.py
 
       - name: commit files
         run: |
