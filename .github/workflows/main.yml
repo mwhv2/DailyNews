@@ -29,10 +29,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-        env:
-          API_KEY: ${{ secrets.API_KEY }}
           
-      - name: execute py script 
+      - name: execute py script
+        env:
+          API_KEY: ${{ secrets.API_KEY }} 
         run: python DailyNews.py
 
       - name: commit files
