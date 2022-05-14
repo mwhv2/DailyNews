@@ -41,6 +41,11 @@ npr = feedparser.parse("https://feeds.npr.org/500005/podcast.xml")
 npr_image = npr['feed']['image']['href']
 npr_url = npr['entries'][0]['links'][0]['href']
 
+# Get the more recent Short Wave podcast
+short = feedparser.parse("https://feeds.npr.org/510351/podcast.xml")
+short_img = short['feed']['image']['href']
+short_url = short['entries'][0]['links'][1]['href']
+
 # Get most recent Scientific American 60-second science podcast
 sciam = feedparser.parse("http://rss.sciam.com/sciam/60secsciencepodcast?format=xml")
 sciam_img = "https://static.scientificamerican.com/sciam/cache/file/42C04BF1-2ED5-44D9-A29114A15A9BDF42_source.jpg"
@@ -171,30 +176,24 @@ Science_Text = ""
 for i in range(int(len(s_res['articles'])/2)):
     r1 = s_res['articles'][A[i]]
     r2 = s_res['articles'][B[i]]
-    if i == 0:
+    if i == 4:
         Science_Text = Science_Text + f"""
         <div class="row mb-3">
             <div class="col-md-6">
                 <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                     <div class="embed-responsive embed-responsive-4by3 d-flex justify-content-center">
-                        <video controls poster={sciam_img} width="40%">
-                                <source src={sci_url} type="audio/mpeg">
+                        <video controls poster={short_img} width="40%">
+                                <source src={short_url} type="audio/mpeg">
                         </video>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
-                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
-                        <h5 class="mb-1">
-                        <a href="{r1['url']}" target="_blank">{r1['title']}</a>
-                        </h5>
-                        <p class="card-text mb-auto">{r1['description']}</p>
-                    </div>
-                    <div class="col-sm-5 rounded">
-                        <a href="{r1['url']}" target="_blank">
-                        <img class="img-thumbnail" src = "{r1['urlToImage']}" alt="{nope}"/>
-                        </a>
+                    <div class="embed-responsive embed-responsive-4by3 d-flex justify-content-center">
+                        <video controls poster={sciam_img} width="40%">
+                                <source src={sci_url} type="audio/mpeg">
+                        </video>
                     </div>
                 </div>
             </div>
@@ -445,7 +444,7 @@ html_template = f"""
 </main>
 
 <footer class="blog-footer">
-  <p>Last updated at {update}. Created by <a href="https://mwhv2.github.io/" target="_blank">Matt Wentzel-Long</a>.
+  <p>Last updated at {update} UTC. Created by <a href="https://mwhv2.github.io/" target="_blank">Matt Wentzel-Long</a>.
   <br><a href="#">Back to top</a></p>
 </footer>
 
