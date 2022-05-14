@@ -84,7 +84,8 @@ df.set_index("Date",inplace=True)
 fig = px.line(df,x=df.index, y=u'Temperature \u00B0F',
               hover_data=[u'Temperature \u00B0F',"Short"])
 fig.add_hline(y=32,line_width=1)
-fig.update_layout(hovermode='x',template="seaborn")
+fig.update_layout(hovermode='x', template="seaborn", hoverlabel=dict(bgcolor='rgba(255,255,255,0.75)'))
+fig.update_traces(line_color='#ff7f0e')
 fig.add_annotation(xref="paper", x="0", yref="paper",
                    y="-0.2",
                    text="""<a href="https://www.weather.gov/" target="_blank">Data from the National Weather Service</a>""",
@@ -138,69 +139,6 @@ for i in range(int(len(response['articles'])/2)):
         """
     else:
         Text = Text + f"""
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
-                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
-                        <h5 class="mb-1">
-                        <a href="{r1['url']}" target="_blank">{r1['title']}</a>
-                        </h5>
-                        <p class="card-text mb-auto">{r1['description']}</p>
-                    </div>
-                    <div class="col-sm-5 rounded">
-                        <a href="{r1['url']}" target="_blank">
-                        <img class="img-thumbnail" src = "{r1['urlToImage']}" alt="{nope}"/>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
-                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
-                        <h5 class="mb-1">
-                        <a href="{r2['url']}" target="_blank">{r2['title']}</a>
-                        </h5>
-                        <p class="card-text mb-auto">{r2['description']}</p>
-                    </div>
-                    <div class="col-sm-5 rounded">
-                        <a href="{r2['url']}" target="_blank">
-                        <img class="img-thumbnail" src = "{r2['urlToImage']}" alt="{nope}"/>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        """
-
-Science_Text = ""
-for i in range(int(len(s_res['articles'])/2)):
-    r1 = s_res['articles'][A[i]]
-    r2 = s_res['articles'][B[i]]
-    if i == 4:
-        Science_Text = Science_Text + f"""
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
-                    <div class="embed-responsive embed-responsive-4by3 d-flex justify-content-center">
-                        <video controls poster={short_img} width="40%">
-                                <source src={short_url} type="audio/mpeg">
-                        </video>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
-                    <div class="embed-responsive embed-responsive-4by3 d-flex justify-content-center">
-                        <video controls poster={sciam_img} width="40%">
-                                <source src={sci_url} type="audio/mpeg">
-                        </video>
-                    </div>
-                </div>
-            </div>
-        </div>
-        """
-    else:
-        Science_Text = Science_Text + f"""
         <div class="row mb-3">
             <div class="col-md-6">
                 <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
@@ -306,6 +244,69 @@ for i in range(int(len(fr_res['articles'])/2)):
 
 A = [0,2,4,6,8]
 B = [1,3,5,7,9]
+Science_Text = ""
+for i in range(int(len(s_res['articles'])/2)):
+    r1 = s_res['articles'][A[i]]
+    r2 = s_res['articles'][B[i]]
+    if i == 4:
+        Science_Text = Science_Text + f"""
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                    <div class="embed-responsive embed-responsive-4by3 d-flex justify-content-center">
+                        <video controls poster={short_img} width="40%">
+                                <source src={short_url} type="audio/mpeg">
+                        </video>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                    <div class="embed-responsive embed-responsive-4by3 d-flex justify-content-center">
+                        <video controls poster={sciam_img} width="40%">
+                                <source src={sci_url} type="audio/mpeg">
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """
+    else:
+        Science_Text = Science_Text + f"""
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
+                        <h5 class="mb-1">
+                        <a href="{r1['url']}" target="_blank">{r1['title']}</a>
+                        </h5>
+                        <p class="card-text mb-auto">{r1['description']}</p>
+                    </div>
+                    <div class="col-sm-5 rounded">
+                        <a href="{r1['url']}" target="_blank">
+                        <img class="img-thumbnail" src = "{r1['urlToImage']}" alt="{nope}"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
+                        <h5 class="mb-1">
+                        <a href="{r2['url']}" target="_blank">{r2['title']}</a>
+                        </h5>
+                        <p class="card-text mb-auto">{r2['description']}</p>
+                    </div>
+                    <div class="col-sm-5 rounded">
+                        <a href="{r2['url']}" target="_blank">
+                        <img class="img-thumbnail" src = "{r2['urlToImage']}" alt="{nope}"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """
+
 Tech_Text = ""
 for i in range(int(len(t_res['articles'])/2)):
     r1 = t_res['articles'][A[i]]
