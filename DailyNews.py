@@ -67,39 +67,28 @@ forecast = requests.get(forecast_url)
 forecast = forecast.json()
 try:
     periods = forecast['properties']['periods']
+    df = pd.DataFrame()
+    for i in periods:
+        dt = pd.to_datetime(i['startTime'])
+        temp = i['temperature']
+        short = i['shortForecast']
+        df = df.append([[dt,temp,short]])
+    df.columns = ["Date",u'Temperature \u00B0F',"Short"]
+    df.set_index("Date",inplace=True)
+
+    fig = px.line(df,x=df.index, y=u'Temperature \u00B0F',
+                  hover_data=[u'Temperature \u00B0F',"Short"])
+    fig.add_hline(y=32,line_width=1)
+    fig.update_layout(hovermode='x', template="seaborn", hoverlabel=dict(bgcolor='rgba(255,255,255,0.75)'))
+    fig.update_traces(line_color='#ff7f0e')
+    fig.update_layout(margin=dict(l=20, r=20, t=20, b=20))
+    fig.add_annotation(xref="paper", x="0", yref="paper",
+                       y="-0.2",
+                       text="""<a href="https://www.weather.gov/" target="_blank">Data from the National Weather Service</a>""",
+                       showarrow=False)
+    fig.write_html("NWSforecast.html")
 except KeyError:
-    forecast = requests.get(forecast_url)
-    forecast = forecast.json()
-    periods = forecast['properties']['periods']
-
-df = pd.DataFrame()
-for i in periods:
-    dt = pd.to_datetime(i['startTime'])
-    temp = i['temperature']
-    short = i['shortForecast']
-    df = df.append([[dt,temp,short]])
-df.columns = ["Date",u'Temperature \u00B0F',"Short"]
-df.set_index("Date",inplace=True)
-
-fig = px.line(df,x=df.index, y=u'Temperature \u00B0F',
-              hover_data=[u'Temperature \u00B0F',"Short"])
-fig.add_hline(y=32,line_width=1)
-fig.update_layout(hovermode='x', template="seaborn", hoverlabel=dict(bgcolor='rgba(255,255,255,0.75)'))
-fig.update_traces(line_color='#ff7f0e')
-fig.add_annotation(xref="paper", x="0", yref="paper",
-                   y="-0.2",
-                   text="""<a href="https://www.weather.gov/" target="_blank">Data from the National Weather Service</a>""",
-                   showarrow=False)
-fig.write_html("NWSforecast.html")
-
-# Get most recent screenshot of the Sun at 171 Ang.
-current = now1.strftime("%Y-%m-%dT%H:%M:%SZ")
-try:
-    ide = requests.get(f"https://api.helioviewer.org/v2/getClosestImage/?date={current}&sourceId=10")
-    d = ide.json()['date'].replace(' ','T')
-    Sun_im = f"https://api.helioviewer.org/v2/takeScreenshot/?date={d}Z&imageScale=5&layers=[SDO,AIA,AIA,171,1,100]&x0=0&y0=0&width=500&height=500&display=true"
-except ConnectionError:
-    Sun_im = ""
+    pass
 
 # Initialize and build lists of stories to be written onto html page
 A = [0,1,3,5,7]
@@ -377,7 +366,9 @@ html_template = f"""
         }}
       }}
     </style>
-    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
     <link href="https://fonts.googleapis.com/css?family=Playfair&#43;Display:700,900&amp;display=swap" rel="stylesheet">
     <link href="blog.css" rel="stylesheet">
   </head>
@@ -427,18 +418,38 @@ html_template = f"""
 </main>
 
 <main class="container">
-<h3 class="py-2"><a id="weather">Seven Day Forecast and Current SDO View at 171&#8491</a></h3>
+<h3 class="py-2"><a id="weather">Seven Day Forecast and Current SDO Views</a></h3>
 <div class="row mb-3">
-    <div class="col-md-8">
+    <div class="col-md-7">
         <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
             <iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless"
             src="NWSforecast.html" height="525" width="100%"></iframe>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-5">
         <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
-            <a href="https://helioviewer.org/" target="_blank">
-            <img src={Sun_im} alt="Latest SDO image not available" style="width:97%"></a>
+            <div class="carousel slide" data-bs-ride="carousel" id="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carousel" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#carousel" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#carousel" data-bs-slide-to="2"></button>
+                    <button type="button" data-bs-target="#carousel" data-bs-slide-to="3"></button>
+                </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="http://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_4500.jpg" class="d-block w-100">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="http://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0335.jpg" class="d-block w-100">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="http://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0171.jpg" class="d-block w-100">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="http://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0094.jpg" class="d-block w-100">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
