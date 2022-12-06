@@ -81,7 +81,7 @@ try:
     fig.add_hline(y=32,line_width=1)
     fig.update_layout(hovermode='x', template="seaborn", hoverlabel=dict(bgcolor='rgba(255,255,255,0.75)'))
     fig.update_traces(line_color='#ff7f0e')
-    fig.update_layout(margin=dict(l=20, r=20, t=20, b=20))
+    fig.update_layout(margin=dict(l=20, r=20, t=20, b=16))
     fig.add_annotation(xref="paper", x="0", yref="paper",
                        y="-0.2",
                        text="""<a href="https://www.weather.gov/" target="_blank">Data from the National Weather Service</a>""",
@@ -437,16 +437,16 @@ html_template = f"""
                 </div>
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="http://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_4500.jpg" class="d-block w-100">
+                        <img src="https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_1600.jpg" class="d-block w-100">
                     </div>
                     <div class="carousel-item">
-                        <img src="http://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0335.jpg" class="d-block w-100">
+                        <img src="http://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0335.jpg" class="d-block w-100">
                     </div>
                     <div class="carousel-item">
-                        <img src="http://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0171.jpg" class="d-block w-100">
+                        <img src="http://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0171.jpg" class="d-block w-100">
                     </div>
                     <div class="carousel-item">
-                        <img src="http://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0094.jpg" class="d-block w-100">
+                        <img src="http://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0094.jpg" class="d-block w-100">
                     </div>
                 </div>
             </div>
