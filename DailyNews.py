@@ -38,23 +38,33 @@ fr_res = fr_res.json()
 
 # Get link to NPR Hourly News summary
 npr = feedparser.parse("https://feeds.npr.org/500005/podcast.xml")
-npr_image = npr['feed']['image']['href']
+npr_img = "https://media.npr.org/assets/img/2018/08/06/nprnewsnow_podcasttile_sq.webp?s=400&c=85"
 npr_url = npr['entries'][0]['links'][0]['href']
+npr_title = npr['entries'][0]['title']
+npr_main = "https://www.npr.org/"
 
 # Get the more recent Short Wave podcast
 short = feedparser.parse("https://feeds.npr.org/510351/podcast.xml")
-short_img = short['feed']['image']['href']
+short_img = "https://media.npr.org/assets/img/2022/09/23/short-wave_tile_npr-network-01_sq-517382b4b8fd0ab48ea9c781253f9992eab733dc.jpg?s=400&c=85&f=webp"
 short_url = short['entries'][0]['links'][1]['href']
+short_title = short['entries'][0]['title']
+short_trans = short['entries'][0]['links'][0]['href']
+short_main = "https://www.npr.org/podcasts/510351/short-wave"
 
 # Get most recent Scientific American 60-second science podcast
 sciam = feedparser.parse("http://rss.sciam.com/sciam/60secsciencepodcast?format=xml")
 sciam_img = "https://static.scientificamerican.com/sciam/cache/file/42C04BF1-2ED5-44D9-A29114A15A9BDF42_source.jpg"
-sci_url = sciam['entries'][0]['links'][1]['href']
+sciam_url = sciam['entries'][0]['links'][1]['href']
+sciam_title = sciam['entries'][0]['title']
+sciam_trans = sciam['entries'][0]['links'][0]['href']
+sciam_main = "https://www.scientificamerican.com/"
 
 # Get the hourly French news from rfi.fr
 rfi = feedparser.parse("https://www.rfi.fr/fr/podcasts/journal-fran%C3%A7ais-facile/podcast")
-rfi = rfi['entries'][0]['links'][1]['href']
+rfi_url = rfi['entries'][0]['links'][1]['href']
 rfi_img = "https://overcast.fm/art/full/1971980?4"
+rfi_title = rfi['entries'][0]['title']
+rfi_main = "https://www.rfi.fr/fr/"
 
 # National Weather Service 5 day forecast (3 hour intervals)
 # Current location is set to Wooster, OH. This requires
@@ -81,7 +91,7 @@ try:
     fig.add_hline(y=32,line_width=1)
     fig.update_layout(hovermode='x', template="seaborn", hoverlabel=dict(bgcolor='rgba(255,255,255,0.75)'))
     fig.update_traces(line_color='#ff7f0e')
-    fig.update_layout(margin=dict(l=20, r=20, t=20, b=16))
+    fig.update_layout(margin=dict(l=20, r=20))
     fig.add_annotation(xref="paper", x="0", yref="paper",
                        y="-0.2",
                        text="""<a href="https://www.weather.gov/" target="_blank">Data from the National Weather Service</a>""",
@@ -102,10 +112,16 @@ for i in range(int(len(response['articles'])/2)):
         <div class="row mb-3">
             <div class="col-md-6">
                 <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
-                    <div class="embed-responsive embed-responsive-4by3 d-flex justify-content-center">
-                        <video controls poster={npr_image} width="40%">
-                                <source src={npr_url} type="audio/mpeg">
-                        </video>
+                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
+                        <h5 class="mb-1">
+                        <a href="{npr_main}" target="_blank">{npr_title}</a>
+                        </h5>
+                        <p class="card-text mb-auto">The latest news in five minutes. Updated hourly.<audio controls><source src="{npr_url}" type="audio/mpeg"></audio></p>
+                    </div>
+                    <div class="col-sm-5 rounded">
+                        <a href="{npr_main}" target="_blank">
+                        <img class="img-thumbnail" src = "{npr_img}" alt="{nope}"/>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -171,10 +187,17 @@ for i in range(int(len(fr_res['articles'])/2)):
         <div class="row mb-3">
             <div class="col-md-6">
                 <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
-                    <div class="embed-responsive embed-responsive-4by3 d-flex justify-content-center">
-                        <video controls poster={rfi_img} width="40%">
-                                <source src={rfi} type="audio/mpeg">
-                        </video>
+                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
+                        <h5 class="mb-1">
+                        <a href="{rfi_main}" target="_blank">{rfi_title}</a>
+                        </h5>
+                        <p class="card-text mb-auto">Un vrai journal d’information pour suivre l’actualité internationale en français. \
+                        <audio controls><source src="{rfi_url}" type="audio/mpeg"></audio></p>
+                    </div>
+                    <div class="col-sm-5 rounded">
+                        <a href="{rfi_main}" target="_blank">
+                        <img class="img-thumbnail" src = "{rfi_img}" alt="{nope}"/>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -242,19 +265,33 @@ for i in range(int(len(s_res['articles'])/2)):
         <div class="row mb-3">
             <div class="col-md-6">
                 <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
-                    <div class="embed-responsive embed-responsive-4by3 d-flex justify-content-center">
-                        <video controls poster={short_img} width="40%">
-                                <source src={short_url} type="audio/mpeg">
-                        </video>
+                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
+                        <h5 class="mb-1">
+                        <a href="{short_main}" target="_blank">{short_title}</a>
+                        </h5>
+                        <p class="card-text mb-auto">New discoveries, everyday mysteries, and the science behind the headlines — all in about 10 minutes, every weekday. \
+                        <a href="{short_trans}" target="_blank">Transcript</a><audio controls><source src="{short_url}" type="audio/mpeg"></audio></p>
+                    </div>
+                    <div class="col-sm-5 rounded">
+                        <a href="{short_main}" target="_blank">
+                        <img class="img-thumbnail" src = "{short_img}" alt="{nope}"/>
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
-                    <div class="embed-responsive embed-responsive-4by3 d-flex justify-content-center">
-                        <video controls poster={sciam_img} width="40%">
-                                <source src={sci_url} type="audio/mpeg">
-                        </video>
+                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
+                        <h5 class="mb-1">
+                        <a href="{sciam_main}" target="_blank">{sciam_title}</a>
+                        </h5>
+                        <p class="card-text mb-auto">Tune in every week for rapid reports from the world of science—we'll make it quick and fascinating. \
+                        <a href="{sciam_trans}" target="_blank">Transcript</a><audio controls><source src="{sciam_url}" type="audio/mpeg"></audio></p>
+                    </div>
+                    <div class="col-sm-5 rounded">
+                        <a href="{sciam_main}" target="_blank">
+                        <img class="img-thumbnail" src = "{sciam_img}" alt="{nope}"/>
+                        </a>
                     </div>
                 </div>
             </div>
