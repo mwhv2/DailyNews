@@ -38,7 +38,7 @@ spc = feedparser.parse('https://www.space.com/home/feed/site.xml')
 apod = feedparser.parse("https://apod.pixelweben.de/rss_en.xml")
 space = skt['entries'][:2] + nasa['entries'][:2] + spc['entries'][:2]
 apod = apod['entries'][0]
-apod_soup = BeautifulSoup(apod['summary'], features='lxml')
+apod_soup = BeautifulSoup(apod['summary'], 'lxml')
 apod_image = apod_soup.find('img')['src']
 
 # Get link to NPR Hourly News summary
@@ -194,11 +194,11 @@ for i in range(4):
         r1 = space[A[i]]
         r2 = space[B[i]]
     if i == 0:
-        soup1 = BeautifulSoup(r1['summary'], features='lxml')
+        soup1 = BeautifulSoup(r1['summary'], 'lxml')
         sum1 = soup1.get_text().split('\n')[0]
         url1 = r1['media_content'][0]['url']
         
-        soup2 = BeautifulSoup(r2['summary'], features='lxml')
+        soup2 = BeautifulSoup(r2['summary'], 'lxml')
         sum2 = soup2.get_text().split('\n')[0]
         url2 = r2['media_content'][0]['url']
         
