@@ -441,7 +441,7 @@ for i in range(int(len(t_res['articles'])/2)):
     """
 
 
-f_html = open('DailyNews_Bootstrap_dark_v2.html','w',encoding="utf-8")
+f_html = open('index.html','w',encoding="utf-8")
 
 html_template = f"""
 <!doctype html>
