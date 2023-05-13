@@ -6,6 +6,7 @@ import pandas as pd
 import plotly.express as px
 import feedparser
 import os
+from bs4 import BeautifulSoup
 
 nope = "Image not available"
 
@@ -18,8 +19,7 @@ now = now1.strftime("%A, %B %d, %Y")
 key = os.environ.get('API_KEY')
 
 # For top headlines and science in the US
-#re1_url = f"https://newsapi.org/v2/top-headlines?country=us&pageSize=10&apiKey={key}"
-re1_url = f"https://newsapi.org/v2/top-headlines?sources=associated-press,bbc-news,al-jazeera-english&pageSize=10&apiKey={key}"
+re1_url = f"https://newsapi.org/v2/top-headlines?sources=associated-press,bbc-news,al-jazeera-english,le-monde,national-geographic&pageSize=8&apiKey={key}"
 response = requests.get(re1_url)
 response = response.json()
 
@@ -27,14 +27,19 @@ s_url = f"https://newsapi.org/v2/top-headlines?country=us&category=science&pageS
 s_res = requests.get(s_url)
 s_res = s_res.json()
 
-t_url = f"https://newsapi.org/v2/top-headlines?country=us&category=technology&pageSize=10&apiKey={key}"
+t_url = f"https://newsapi.org/v2/top-headlines?sources=wired,ars-technica,engadget,ign,polygon&pageSize=8&apiKey={key}"
 t_res = requests.get(t_url)
 t_res = t_res.json()
 
-# Top headlines in France
-fr_url = f"https://newsapi.org/v2/top-headlines?country=fr&pageSize=10&apiKey={key}"
-fr_res = requests.get(fr_url)
-fr_res = fr_res.json()
+# Space news from NASA and the ESA
+skt = feedparser.parse('https://www.universetoday.com/feed/')
+nasa = feedparser.parse("https://www.nasa.gov/rss/dyn/breaking_news.rss")
+spc = feedparser.parse('https://www.space.com/home/feed/site.xml')
+apod = feedparser.parse("https://apod.pixelweben.de/rss_en.xml")
+space = skt['entries'][:2] + nasa['entries'][:2] + spc['entries'][:2]
+apod = apod['entries'][0]
+apod_soup = BeautifulSoup(apod['summary'], features='lxml')
+apod_image = apod_soup.find('img')['src']
 
 # Get link to NPR Hourly News summary
 npr = feedparser.parse("https://feeds.npr.org/500005/podcast.xml")
@@ -91,7 +96,7 @@ try:
     fig.add_hline(y=32,line_width=1)
     fig.update_layout(hovermode='x', template="seaborn", hoverlabel=dict(bgcolor='rgba(255,255,255,0.75)'))
     fig.update_traces(line_color='#ff7f0e')
-    fig.update_layout(margin=dict(l=20, r=20))
+    fig.update_layout(margin=dict(l=20, r=20, t=20, b=16))
     fig.add_annotation(xref="paper", x="0", yref="paper",
                        y="-0.2",
                        text="""<a href="https://www.weather.gov/" target="_blank">Data from the National Weather Service</a>""",
@@ -100,9 +105,10 @@ try:
 except KeyError:
     pass
 
+
 # Initialize and build lists of stories to be written onto html page
-A = [0,1,3,5,7]
-B = [1,2,4,6,8]
+A = [0,2,4,6,8]
+B = [1,3,5,7,9]
 Text = ""
 for i in range(int(len(response['articles'])/2)):
     r1 = response['articles'][A[i]]
@@ -111,7 +117,7 @@ for i in range(int(len(response['articles'])/2)):
         Text = Text + f"""
         <div class="row mb-3">
             <div class="col-md-6">
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                     <div class="col-sm-7 p-3 d-flex flex-column position-static">
                         <h5 class="mb-1">
                         <a href="{npr_main}" target="_blank">{npr_title}</a>
@@ -120,73 +126,13 @@ for i in range(int(len(response['articles'])/2)):
                     </div>
                     <div class="col-sm-5 rounded">
                         <a href="{npr_main}" target="_blank">
-                        <img class="img-thumbnail" src = "{npr_img}" alt="{nope}"/>
+                        <img class="img-fluid" src = "{npr_img}" alt="{nope}"/>
                         </a>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
-                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
-                        <h5 class="mb-1">
-                        <a href="{r1['url']}" target="_blank">{r1['title']}</a>
-                        </h5>
-                        <p class="card-text mb-auto">{r1['description']}</p>
-                    </div>
-                    <div class="col-sm-5 rounded">
-                        <a href="{r1['url']}" target="_blank">
-                        <img class="img-thumbnail" src = "{r1['urlToImage']}" alt="{nope}"/>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        """
-    else:
-        Text = Text + f"""
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
-                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
-                        <h5 class="mb-1">
-                        <a href="{r1['url']}" target="_blank">{r1['title']}</a>
-                        </h5>
-                        <p class="card-text mb-auto">{r1['description']}</p>
-                    </div>
-                    <div class="col-sm-5 rounded">
-                        <a href="{r1['url']}" target="_blank">
-                        <img class="img-thumbnail" src = "{r1['urlToImage']}" alt="{nope}"/>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
-                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
-                        <h5 class="mb-1">
-                        <a href="{r2['url']}" target="_blank">{r2['title']}</a>
-                        </h5>
-                        <p class="card-text mb-auto">{r2['description']}</p>
-                    </div>
-                    <div class="col-sm-5 rounded">
-                        <a href="{r2['url']}" target="_blank">
-                        <img class="img-thumbnail" src = "{r2['urlToImage']}" alt="{nope}"/>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        """
-
-Fr_Text = ""
-for i in range(int(len(fr_res['articles'])/2)):
-    r1 = fr_res['articles'][A[i]]
-    r2 = fr_res['articles'][B[i]]
-    if i == 0:
-        Fr_Text = Fr_Text + f"""
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                     <div class="col-sm-7 p-3 d-flex flex-column position-static">
                         <h5 class="mb-1">
                         <a href="{rfi_main}" target="_blank">{rfi_title}</a>
@@ -196,22 +142,7 @@ for i in range(int(len(fr_res['articles'])/2)):
                     </div>
                     <div class="col-sm-5 rounded">
                         <a href="{rfi_main}" target="_blank">
-                        <img class="img-thumbnail" src = "{rfi_img}" alt="{nope}"/>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
-                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
-                        <h5 class="mb-1">
-                        <a href="{r1['url']}" target="_blank">{r1['title']}</a>
-                        </h5>
-                        <p class="card-text mb-auto">{r1['description']}</p>
-                    </div>
-                    <div class="col-sm-5 rounded">
-                        <a href="{r1['url']}" target="_blank">
-                        <img class="img-thumbnail" src = "{r1['urlToImage']}" alt="{nope}"/>
+                        <img class="img-fluid" src = "{rfi_img}" alt="{nope}"/>
                         </a>
                     </div>
                 </div>
@@ -219,10 +150,10 @@ for i in range(int(len(fr_res['articles'])/2)):
         </div>
         """
     else:
-        Fr_Text = Fr_Text + f"""
+        Text = Text + f"""
         <div class="row mb-3">
             <div class="col-md-6">
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                     <div class="col-sm-7 p-3 d-flex flex-column position-static">
                         <h5 class="mb-1">
                         <a href="{r1['url']}" target="_blank">{r1['title']}</a>
@@ -231,13 +162,13 @@ for i in range(int(len(fr_res['articles'])/2)):
                     </div>
                     <div class="col-sm-5 rounded">
                         <a href="{r1['url']}" target="_blank">
-                        <img class="img-thumbnail" src = "{r1['urlToImage']}" alt="{nope}"/>
+                        <img class="img-fluid" src = "{r1['urlToImage']}" alt="{nope}"/>
                         </a>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                     <div class="col-sm-7 p-3 d-flex flex-column position-static">
                         <h5 class="mb-1">
                         <a href="{r2['url']}" target="_blank">{r2['title']}</a>
@@ -246,13 +177,150 @@ for i in range(int(len(fr_res['articles'])/2)):
                     </div>
                     <div class="col-sm-5 rounded">
                         <a href="{r2['url']}" target="_blank">
-                        <img class="img-thumbnail" src = "{r2['urlToImage']}" alt="{nope}"/>
+                        <img class="img-fluid" src = "{r2['urlToImage']}" alt="{nope}"/>
                         </a>
                     </div>
                 </div>
             </div>
         </div>
         """
+
+
+A = [0,2,4,6,8]
+B = [1,3,5,7,9]
+Space_Text = ""
+for i in range(4):
+    if i < 3:
+        r1 = space[A[i]]
+        r2 = space[B[i]]
+    if i == 0:
+        soup1 = BeautifulSoup(r1['summary'], features='lxml')
+        sum1 = soup1.get_text().split('\n')[0]
+        url1 = r1['media_content'][0]['url']
+        
+        soup2 = BeautifulSoup(r2['summary'], features='lxml')
+        sum2 = soup2.get_text().split('\n')[0]
+        url2 = r2['media_content'][0]['url']
+        
+        Space_Text = Space_Text + f"""
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
+                        <h5 class="mb-1">
+                        <a href="{r1['link']}" target="_blank">{r1['title']}</a>
+                        </h5>
+                        <p class="card-text mb-auto">{sum1}</p>
+                    </div>
+                    <div class="col-sm-5 rounded">
+                        <a href="{r1['link']}" target="_blank">
+                        <img class="img-fluid" src = "{url1}" alt="{nope}"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
+                        <h5 class="mb-1">
+                        <a href="{r2['link']}" target="_blank">{r2['title']}</a>
+                        </h5>
+                        <p class="card-text mb-auto">{sum2}</p>
+                    </div>
+                    <div class="col-sm-5 rounded">
+                        <a href="{r2['link']}" target="_blank">
+                        <img class="img-fluid" src = "{url2}" alt="{nope}"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """
+    if i == 1:
+        Space_Text = Space_Text + f"""
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
+                        <h5 class="mb-1">
+                        <a href="{r1['link']}" target="_blank">{r1['title']}</a>
+                        </h5>
+                        <p class="card-text mb-auto">{r1['summary']}</p>
+                    </div>
+                    <div class="col-sm-5 rounded">
+                        <a href="{r1['link']}" target="_blank">
+                        <img class="img-fluid" src = "{r1['links'][1]['href']}" alt="{nope}"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
+                        <h5 class="mb-1">
+                        <a href="{r2['link']}" target="_blank">{r2['title']}</a>
+                        </h5>
+                        <p class="card-text mb-auto">{r2['summary']}</p>
+                    </div>
+                    <div class="col-sm-5 rounded">
+                        <a href="{r2['link']}" target="_blank">
+                        <img class="img-fluid" src = "{r2['links'][1]['href']}" alt="{nope}"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """
+    if i == 2:
+        
+        Space_Text = Space_Text + f"""
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
+                        <h5 class="mb-1">
+                        <a href="{r1['link']}" target="_blank">{r1['title']}</a>
+                        </h5>
+                        <p class="card-text mb-auto">{r1['summary']}</p>
+                    </div>
+                    <div class="col-sm-5 rounded">
+                        <a href="{r1['link']}" target="_blank">
+                        <img class="img-fluid" src = "{r1['links'][1]['href']}" alt="{nope}"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
+                        <h5 class="mb-1">
+                        <a href="{r2['link']}" target="_blank">{r2['title']}</a>
+                        </h5>
+                        <p class="card-text mb-auto">{sum2}</p>
+                    </div>
+                    <div class="col-sm-5 rounded">
+                        <a href="{r2['link']}" target="_blank">
+                        <img class="img-fluid" src = "{url2}" alt="{nope}"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """
+    if i == 3:
+        Space_Text = Space_Text + f"""
+        <div class="row mb-3">
+            <div class="col" align="center">
+                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center caption text-center">
+                    <a href="{apod['link']}" target="_blank">
+                    <img class="img-fluid" src = "{apod_image}" alt="{nope}"/>
+                     </a>
+                    <p>{apod['title']}</p>
+                </div>
+            </div>
+        </div>
+        """
+
 
 A = [0,2,4,6,8]
 B = [1,3,5,7,9]
@@ -264,7 +332,7 @@ for i in range(int(len(s_res['articles'])/2)):
         Science_Text = Science_Text + f"""
         <div class="row mb-3">
             <div class="col-md-6">
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                     <div class="col-sm-7 p-3 d-flex flex-column position-static">
                         <h5 class="mb-1">
                         <a href="{short_main}" target="_blank">{short_title}</a>
@@ -274,13 +342,13 @@ for i in range(int(len(s_res['articles'])/2)):
                     </div>
                     <div class="col-sm-5 rounded">
                         <a href="{short_main}" target="_blank">
-                        <img class="img-thumbnail" src = "{short_img}" alt="{nope}"/>
+                        <img class="img-fluid" src = "{short_img}" alt="{nope}"/>
                         </a>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                     <div class="col-sm-7 p-3 d-flex flex-column position-static">
                         <h5 class="mb-1">
                         <a href="{sciam_main}" target="_blank">{sciam_title}</a>
@@ -290,7 +358,7 @@ for i in range(int(len(s_res['articles'])/2)):
                     </div>
                     <div class="col-sm-5 rounded">
                         <a href="{sciam_main}" target="_blank">
-                        <img class="img-thumbnail" src = "{sciam_img}" alt="{nope}"/>
+                        <img class="img-fluid" src = "{sciam_img}" alt="{nope}"/>
                         </a>
                     </div>
                 </div>
@@ -301,7 +369,7 @@ for i in range(int(len(s_res['articles'])/2)):
         Science_Text = Science_Text + f"""
         <div class="row mb-3">
             <div class="col-md-6">
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                     <div class="col-sm-7 p-3 d-flex flex-column position-static">
                         <h5 class="mb-1">
                         <a href="{r1['url']}" target="_blank">{r1['title']}</a>
@@ -310,13 +378,13 @@ for i in range(int(len(s_res['articles'])/2)):
                     </div>
                     <div class="col-sm-5 rounded">
                         <a href="{r1['url']}" target="_blank">
-                        <img class="img-thumbnail" src = "{r1['urlToImage']}" alt="{nope}"/>
+                        <img class="img-fluid" src = "{r1['urlToImage']}" alt="{nope}"/>
                         </a>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                     <div class="col-sm-7 p-3 d-flex flex-column position-static">
                         <h5 class="mb-1">
                         <a href="{r2['url']}" target="_blank">{r2['title']}</a>
@@ -325,7 +393,7 @@ for i in range(int(len(s_res['articles'])/2)):
                     </div>
                     <div class="col-sm-5 rounded">
                         <a href="{r2['url']}" target="_blank">
-                        <img class="img-thumbnail" src = "{r2['urlToImage']}" alt="{nope}"/>
+                        <img class="img-fluid" src = "{r2['urlToImage']}" alt="{nope}"/>
                         </a>
                     </div>
                 </div>
@@ -340,7 +408,7 @@ for i in range(int(len(t_res['articles'])/2)):
     Tech_Text = Tech_Text + f"""
     <div class="row mb-3">
         <div class="col-md-6">
-            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+            <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                 <div class="col-sm-7 p-3 d-flex flex-column position-static">
                     <h5 class="mb-1">
                     <a href="{r1['url']}" target="_blank">{r1['title']}</a>
@@ -349,13 +417,13 @@ for i in range(int(len(t_res['articles'])/2)):
                 </div>
                 <div class="col-sm-5 rounded">
                     <a href="{r1['url']}" target="_blank">
-                    <img class="img-thumbnail" src = "{r1['urlToImage']}" alt="{nope}"/>
+                    <img class="img-fluid" src = "{r1['urlToImage']}" alt="{nope}"/>
                     </a>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+            <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                 <div class="col-sm-7 p-3 d-flex flex-column position-static">
                     <h5 class="mb-1">
                     <a href="{r2['url']}" target="_blank">{r2['title']}</a>
@@ -364,7 +432,7 @@ for i in range(int(len(t_res['articles'])/2)):
                 </div>
                 <div class="col-sm-5 rounded">
                     <a href="{r2['url']}" target="_blank">
-                    <img class="img-thumbnail" src = "{r2['urlToImage']}" alt="{nope}"/>
+                    <img class="img-fluid" src = "{r2['urlToImage']}" alt="{nope}"/>
                     </a>
                 </div>
             </div>
@@ -373,7 +441,7 @@ for i in range(int(len(t_res['articles'])/2)):
     """
 
 
-f_html = open('index.html','w',encoding="utf-8")
+f_html = open('DailyNews_Bootstrap_dark_v2.html','w',encoding="utf-8")
 
 html_template = f"""
 <!doctype html>
@@ -405,7 +473,7 @@ html_template = f"""
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-
+    
     <link href="https://fonts.googleapis.com/css?family=Playfair&#43;Display:700,900&amp;display=swap" rel="stylesheet">
     <link href="blog.css" rel="stylesheet">
   </head>
@@ -415,19 +483,19 @@ html_template = f"""
   <header class="blog-header py-3">
     <div class="align-items-center">
       <div class="text-center">
-        <p class="blog-header-logo text-dark" href="#">The Daily News</p>
+        <p class="blog-header-logo" href="#">The Daily News</p>
 	<p>{now}</p>
       </div>
     </div>
   </header>
 </div>
 
-<div class="container">
+<div class="container-md">
   <div class="nav-scroller py-1 mb-2">
     <nav class="nav d-flex justify-content-between">
       <a class="p-2 link-secondary" href="#top">Top Headlines</a>
+      <a class="p-2 link-secondary" href="#space">Space</a>
       <a class="p-2 link-secondary" href="#science">Science</a>
-      <a class="p-2 link-secondary" href="#france">French News</a>
       <a class="p-2 link-secondary" href="#tech">Technology</a>
       <a class="p-2 link-secondary" href="#weather">Weather</a>
     </nav>
@@ -440,13 +508,13 @@ html_template = f"""
 </main>
 
 <main class="container">
-<h3 class="py-2"><a id="science">Science</a></h3>
-""" + Science_Text + f"""
+<h3 class="py-2"><a id="space">Space</a></h3>
+""" + Space_Text + f"""
 </main>
 
 <main class="container">
-<h3 class="py-2"><a id="france">French News</a></h3>
-""" + Fr_Text + f"""
+<h3 class="py-2"><a id="science">Science</a></h3>
+""" + Science_Text + f"""
 </main>
 
 <main class="container">
@@ -458,13 +526,13 @@ html_template = f"""
 <h3 class="py-2"><a id="weather">Seven Day Forecast and Current SDO Views</a></h3>
 <div class="row mb-3">
     <div class="col-md-7">
-        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+        <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
             <iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless"
             src="NWSforecast.html" height="525" width="100%"></iframe>
         </div>
     </div>
     <div class="col-md-5">
-        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+        <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
             <div class="carousel slide" data-bs-ride="carousel" id="carousel">
                 <div class="carousel-indicators">
                     <button type="button" data-bs-target="#carousel" data-bs-slide-to="0" class="active"></button>
@@ -489,6 +557,9 @@ html_template = f"""
             </div>
         </div>
     </div>
+</div>
+<div class="row mb-3 embed-responsive">
+    <iframe src='https://mars.nasa.gov/layout/embed/image/mslweather/' height='630' scrolling='no' frameborder='0'></iframe>
 </div>
 </main>
 
