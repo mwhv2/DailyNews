@@ -296,11 +296,11 @@ for i in range(4):
                         <h5 class="mb-1">
                         <a href="{r2['link']}" target="_blank">{r2['title']}</a>
                         </h5>
-                        <p class="card-text mb-auto">{sum2}</p>
+                        <p class="card-text mb-auto">{r2['summary']}</p>
                     </div>
                     <div class="col-sm-5 rounded">
                         <a href="{r2['link']}" target="_blank">
-                        <img class="img-fluid" src = "{url2}" alt="{nope}"/>
+                        <img class="img-fluid" src = "{r2['links'][1]['href']}" alt="{nope}"/>
                         </a>
                     </div>
                 </div>
@@ -493,7 +493,7 @@ html_template = f"""
 <div class="container-md">
   <div class="nav-scroller py-1 mb-2">
     <nav class="nav d-flex justify-content-between">
-      <a class="p-2 link-secondary" href="#top">Top Headlines</a>
+      <a class="p-2 link-secondary" href="#top">Headlines</a>
       <a class="p-2 link-secondary" href="#space">Space</a>
       <a class="p-2 link-secondary" href="#science">Science</a>
       <a class="p-2 link-secondary" href="#tech">Technology</a>
@@ -503,7 +503,7 @@ html_template = f"""
 </div>
 
 <main class="container">
-<h3 class="py-2"><a id="top">Top Headlines</a></h3>
+<h3 class="py-2"><a id="top">Headlines</a></h3>
 """ + Text + f"""
 </main>
 
