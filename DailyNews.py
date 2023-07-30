@@ -4,6 +4,7 @@ from requests.exceptions import ConnectionError
 import datetime
 import pandas as pd
 import plotly.express as px
+from plotly.subplots import make_subplots
 import feedparser
 import os
 from bs4 import BeautifulSoup
@@ -59,7 +60,10 @@ short_main = "https://www.npr.org/podcasts/510351/short-wave"
 # Get most recent Scientific American 60-second science podcast
 sciam = feedparser.parse("http://rss.sciam.com/sciam/60secsciencepodcast?format=xml")
 sciam_img = "https://static.scientificamerican.com/sciam/cache/file/42C04BF1-2ED5-44D9-A29114A15A9BDF42_source.jpg"
-sciam_url = sciam['entries'][0]['links'][1]['href']
+try:
+    sciam_url = sciam['entries'][0]['links'][1]['href']
+except IndexError:
+    sciam_url = sciam['entries'][1]['links'][1]['href']
 sciam_title = sciam['entries'][0]['title']
 sciam_trans = sciam['entries'][0]['links'][0]['href']
 sciam_main = "https://www.scientificamerican.com/"
@@ -87,18 +91,28 @@ try:
         dt = pd.to_datetime(i['startTime'])
         temp = i['temperature']
         short = i['shortForecast']
-        df = df.append([[dt,temp,short]])
-    df.columns = ["Date",u'Temperature \u00B0F',"Short"]
+        dew = i['dewpoint']['value']*9/5+32
+        temp = pd.DataFrame({'Date': [dt],
+                             u'Temperature \u00B0F': [temp],
+                             'Short': [short], 
+                             'Dewpoint \u00B0F': [dew]})
+        df = pd.concat([df, temp])
     df.set_index("Date",inplace=True)
 
-    fig = px.line(df,x=df.index, y=u'Temperature \u00B0F',
-                  hover_data=[u'Temperature \u00B0F',"Short"])
-    fig.add_hline(y=32,line_width=1)
-    fig.update_layout(hovermode='x', template="seaborn", hoverlabel=dict(bgcolor='rgba(255,255,255,0.75)'))
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+    fig.add_trace(px.line(df,x=df.index,y=u'Temperature \u00B0F',hover_data=[u'Temperature \u00B0F',"Short"]).data[0],
+                 secondary_y=False) 
     fig.update_traces(line_color='#ff7f0e')
-    fig.update_layout(margin=dict(l=20, r=20, t=20, b=16))
-    fig.add_annotation(xref="paper", x="0", yref="paper",
-                       y="-0.2",
+    fig.update_yaxes(title='Temperature \u00B0F', secondary_y=False)
+    fig.add_trace(px.line(df, x=df.index, y='Dewpoint \u00B0F').data[0],
+        secondary_y=True,)
+    fig.update_yaxes(title='Dewpoint \u00B0F', secondary_y=True)
+    fig.add_hline(y=32,line_width=1)
+    fig.update_layout(hovermode='x',template="plotly_dark", hoverlabel=dict(bgcolor='rgba(255,255,255,0.75)'))
+
+    fig.update_layout(margin=dict(l=50, r=1, b=80, t=50))
+    fig.add_annotation(xref="paper", x="0", yref="paper", y="-0.15",
                        text="""<a href="https://www.weather.gov/" target="_blank">Data from the National Weather Service</a>""",
                        showarrow=False)
     fig.write_html("NWSforecast.html")
