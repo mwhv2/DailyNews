@@ -251,6 +251,8 @@ for i in range(4):
         </div>
         """
     if i == 1:
+        string1 = BeautifulSoup(r1['content'][0]['value'])
+        string2 = BeautifulSoup(r2['content'][0]['value'])
         Space_Text = Space_Text + f"""
         <div class="row mb-3">
             <div class="col-md-6">
@@ -263,7 +265,7 @@ for i in range(4):
                     </div>
                     <div class="col-sm-5 rounded">
                         <a href="{r1['link']}" target="_blank">
-                        <img class="img-fluid" src = "{r1['links'][1]['href']}" alt="{nope}"/>
+                        <img class="img-fluid" src = "{string1.find('img')['src']}" alt="{nope}"/>
                         </a>
                     </div>
                 </div>
@@ -278,7 +280,7 @@ for i in range(4):
                     </div>
                     <div class="col-sm-5 rounded">
                         <a href="{r2['link']}" target="_blank">
-                        <img class="img-fluid" src = "{r2['links'][1]['href']}" alt="{nope}"/>
+                        <img class="img-fluid" src = "{string2.find('img')['src']}" alt="{nope}"/>
                         </a>
                     </div>
                 </div>
