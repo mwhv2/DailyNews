@@ -52,14 +52,14 @@ npr_main = "https://www.npr.org/"
 # Get the more recent Short Wave podcast
 short = feedparser.parse("https://feeds.npr.org/510351/podcast.xml")
 short_img = "https://media.npr.org/assets/img/2022/09/23/short-wave_tile_npr-network-01_sq-517382b4b8fd0ab48ea9c781253f9992eab733dc.jpg?s=400&c=85&f=webp"
-short_url = short['entries'][0]['links'][0]['href']
+short_url = short['entries'][0]['links'][1]['href']
 short_title = short['entries'][0]['title']
 short_trans = short['entries'][0]['links'][0]['href']
 short_main = "https://www.npr.org/podcasts/510351/short-wave"
 
 # Get most recent Scientific American 60-second science podcast
 sciam = feedparser.parse("http://rss.sciam.com/sciam/60secsciencepodcast?format=xml")
-sciam_img = "https://static.scientificamerican.com/sciam/cache/file/42C04BF1-2ED5-44D9-A29114A15A9BDF42_source.jpg"
+sciam_img = "https://static.scientificamerican.com/sciam/cache/file/6E8467DF-0688-4D4F-95E46E6B82CC3912_source.jpg"
 try:
     sciam_url = sciam['entries'][0]['links'][1]['href']
 except IndexError:
@@ -253,6 +253,14 @@ for i in range(4):
     if i == 1:
         string1 = BeautifulSoup(r1['content'][0]['value'])
         string2 = BeautifulSoup(r2['content'][0]['value'])
+        try:
+            img1 = string1.find('img')['src']
+        except TypeError:
+            img1 = "https://www.nasa.gov/wp-content/uploads/2023/04/nasa-logo-web-rgb.png"
+        try:
+            img2 = string2.find('img')['src']
+        except TypeError:
+            img2 = "https://www.nasa.gov/wp-content/uploads/2023/04/nasa-logo-web-rgb.png"
         Space_Text = Space_Text + f"""
         <div class="row mb-3">
             <div class="col-md-6">
@@ -265,7 +273,7 @@ for i in range(4):
                     </div>
                     <div class="col-sm-5 rounded">
                         <a href="{r1['link']}" target="_blank">
-                        <img class="img-fluid" src = "{string1.find('img')['src']}" alt="{nope}"/>
+                        <img class="img-fluid" src = "{img1}" alt="{nope}"/>
                         </a>
                     </div>
                 </div>
@@ -280,7 +288,7 @@ for i in range(4):
                     </div>
                     <div class="col-sm-5 rounded">
                         <a href="{r2['link']}" target="_blank">
-                        <img class="img-fluid" src = "{string2.find('img')['src']}" alt="{nope}"/>
+                        <img class="img-fluid" src = "{img2}" alt="{nope}"/>
                         </a>
                     </div>
                 </div>
