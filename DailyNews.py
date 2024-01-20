@@ -61,7 +61,7 @@ short_main = "https://www.npr.org/podcasts/510351/short-wave"
 sciam = feedparser.parse("http://rss.sciam.com/sciam/60secsciencepodcast?format=xml")
 sciam_img = "https://static.scientificamerican.com/sciam/cache/file/6E8467DF-0688-4D4F-95E46E6B82CC3912_source.jpg"
 try:
-    sciam_url = sciam['entries'][0]['links'][1]['href']
+    sciam_url = sciam['entries'][0]['links'][0]['href']
 except IndexError:
     sciam_url = sciam['entries'][1]['links'][1]['href']
 sciam_title = sciam['entries'][0]['title']
