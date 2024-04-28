@@ -53,9 +53,9 @@ npr_main = "https://www.npr.org/"
 short = feedparser.parse("https://feeds.npr.org/510351/podcast.xml")
 short_img = "https://media.npr.org/assets/img/2022/09/23/short-wave_tile_npr-network-01_sq-517382b4b8fd0ab48ea9c781253f9992eab733dc.jpg?s=400&c=85&f=webp"
 try:
-    short_url = short['entries'][0]['links'][0]['href']
-except IndexError:
     short_url = short['entries'][0]['links'][1]['href']
+except IndexError:
+    short_url = short['entries'][0]['links'][0]['href']
 short_title = short['entries'][0]['title']
 short_trans = short['entries'][0]['links'][0]['href']
 short_main = "https://www.npr.org/podcasts/510351/short-wave"
@@ -586,7 +586,7 @@ html_template = f"""
     </div>
 </div>
 <div class="row mb-3 embed-responsive">
-    <iframe src='https://mars.nasa.gov/layout/embed/image/mslweather/' height='630' scrolling='no' frameborder='0'></iframe>
+    <iframe src='https://eyes.nasa.gov/apps/earth/#/vital-signs/air-temperature/airs-infrared-surface-3day?animating=false' height='630' scrolling='no' frameborder='0'></iframe>
 </div>
 </main>
 
