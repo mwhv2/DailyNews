@@ -72,8 +72,12 @@ sciam_trans = sciam['entries'][0]['links'][0]['href']
 sciam_main = "https://www.scientificamerican.com/"
 
 # Get the hourly French news from rfi.fr
-rfi = feedparser.parse("https://www.rfi.fr/fr/podcasts/journal-fran%C3%A7ais-facile/podcast")
-rfi_url = rfi['entries'][0]['links'][1]['href']
+try:
+    rfi = feedparser.parse("https://www.rfi.fr/fr/podcasts/journal-fran%C3%A7ais-facile/podcast")
+    rfi_url = rfi['entries'][0]['links'][1]['href']
+except IndexError:
+    rfi = feedparser.parse("https://apis.fle.rfi.fr/products/get_product/fle_getpodcast_by_nid_author_rfi?token_application=applepodcast_fle&program.entrepriseId=WBMZ39-FLE-FR-20220627")
+    rfi_url = rfi['entries'][0]['links'][1]['href']
 rfi_img = "https://overcast.fm/art/full/1971980?4"
 rfi_title = rfi['entries'][0]['title']
 rfi_main = "https://www.rfi.fr/fr/"
