@@ -24,11 +24,11 @@ re1_url = f"https://newsapi.org/v2/top-headlines?sources=associated-press,bbc-ne
 response = requests.get(re1_url)
 response = response.json()
 
-s_url = f"https://newsapi.org/v2/top-headlines?country=us&category=science&pageSize=10&apiKey={key}"
+s_url = f"https://newsapi.org/v2/top-headlines?country=us&category=science&pageSize=6&apiKey={key}"
 s_res = requests.get(s_url)
 s_res = s_res.json()
 
-t_url = f"https://newsapi.org/v2/top-headlines?sources=wired,ars-technica,engadget,ign,polygon&pageSize=8&apiKey={key}"
+t_url = f"https://newsapi.org/v2/top-headlines?sources=wired,ars-technica,engadget,ign,polygon&pageSize=6&apiKey={key}"
 t_res = requests.get(t_url)
 t_res = t_res.json()
 
@@ -359,7 +359,7 @@ Science_Text = ""
 for i in range(int(len(s_res['articles'])/2)):
     r1 = s_res['articles'][A[i]]
     r2 = s_res['articles'][B[i]]
-    if i == 4:
+    if i == 3:
         Science_Text = Science_Text + f"""
         <div class="row mb-3">
             <div class="col-md-6">
