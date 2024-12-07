@@ -82,16 +82,20 @@ rfi_img = "https://overcast.fm/art/full/1971980?4"
 rfi_title = rfi['entries'][0]['title']
 rfi_main = "https://www.rfi.fr/fr/"
 
+# Get food and travel from NYTimes
+trav = feed.parse('https://www.nytimes.com/services/xml/rss/nyt/Travel.xml')
+food = feed.parse('https://rss.nytimes.com/services/xml/rss/nyt/DiningandWine.xml')
+
 # National Weather Service 5 day forecast (3 hour intervals)
 # Current location is set to Wooster, OH. This requires
 # latitude and longitude info.
-init_url = "https://api.weather.gov/points/40.80,-81.93"
-resp = requests.get(init_url)
-resp = resp.json()
-forecast_url = resp['properties']['forecastHourly']
-forecast = requests.get(forecast_url)
-forecast = forecast.json()
 try:
+    init_url = "https://api.weather.gov/points/40.80,-81.93"
+    resp = requests.get(init_url)
+    resp = resp.json()
+    forecast_url = resp['properties']['forecastHourly']
+    forecast = requests.get(forecast_url)
+    forecast = forecast.json()
     periods = forecast['properties']['periods']
     df = pd.DataFrame()
     for i in periods:
@@ -104,24 +108,107 @@ try:
                              'Short': [short], 
                              'Dewpoint \u00B0F': [dew]})
         df = pd.concat([df, temp])
-    df.set_index("Date",inplace=True)
+
+    init_url = "https://api.weather.gov/points/38.79,-90.49"
+    # Request for information using St. Charles MO Lat and Long
+    resp = requests.get(init_url)
+
+    resp = resp.json()
+    forecast_url = resp['properties']['forecastHourly']
+
+    forecast = requests.get(forecast_url)
+    forecast = forecast.json()
+
+    periods = forecast['properties']['periods']
+
+    df2 = pd.DataFrame()
+    for i in periods:
+        dt = pd.to_datetime(i['startTime'])
+        temp = i['temperature']
+        short = i['shortForecast']
+        dew = i['dewpoint']['value']*9/5+32
+        temp = pd.DataFrame({'Date': [dt],
+                             u'Temperature \u00B0F': [temp],
+                             'Short': [short], 
+                             'Dewpoint \u00B0F': [dew]})
+        df2 = pd.concat([df2, temp])
+
+    init_url = "https://api.weather.gov/points/43.58,-116.56"
+    # Request for information using Nampa ID Lat and Long
+    resp = requests.get(init_url)
+
+    resp = resp.json()
+    forecast_url = resp['properties']['forecastHourly']
+
+    forecast = requests.get(forecast_url)
+    forecast = forecast.json()
+
+    periods = forecast['properties']['periods']
+
+    df3 = pd.DataFrame()
+    for i in periods:
+        dt = pd.to_datetime(i['startTime'])
+        temp = i['temperature']
+        short = i['shortForecast']
+        dew = i['dewpoint']['value']*9/5+32
+        temp = pd.DataFrame({'Date': [dt],
+                             u'Temperature \u00B0F': [temp],
+                             'Short': [short], 
+                             'Dewpoint \u00B0F': [dew]})
+        df3 = pd.concat([df3, temp])
 
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
-    fig.add_trace(px.line(df,x=df.index,y=u'Temperature \u00B0F',hover_data=[u'Temperature \u00B0F',"Short"]).data[0],
-                 secondary_y=False) 
-    fig.update_traces(line_color='#ff7f0e')
-    fig.update_yaxes(title='Temperature \u00B0F', secondary_y=False)
-    fig.add_trace(px.line(df, x=df.index, y='Dewpoint \u00B0F').data[0],
-        secondary_y=True,)
-    fig.update_yaxes(title='Dewpoint \u00B0F', secondary_y=True)
+    for d in dflist:
+        fig.add_trace(px.line(d,x='Date',y=u'Temperature \u00B0F',hover_data=[u'Temperature \u00B0F',"Short"]).data[0],
+                     secondary_y=False) 
+        fig.update_yaxes(title='Temperature \u00B0F', secondary_y=False)
+        fig.add_trace(px.line(d, x='Date', y='Dewpoint \u00B0F').data[0],
+            secondary_y=True,)
+        fig.update_yaxes(title='Dewpoint \u00B0F', secondary_y=True)
+
+    fig.data[0]['visible'] = True
+    fig.data[1]['visible'] = True
+    fig.data[2]['visible'] = False
+    fig.data[3]['visible'] = False
+    fig.data[4]['visible'] = False
+    fig.data[5]['visible'] = False
+
+    fig.update_layout(
+        updatemenus=[
+            dict(
+                active=0,
+                buttons=list([
+                    dict(label="Wooster, OH",
+                         method="update",
+                         args=[{"visible": [True, True, False, False, False, False]}
+                              ]),
+                    dict(label="St. Charles, MO",
+                         method="update",
+                         args=[{"visible": [False, False, True, True, False, False]},
+                               ]),
+                    dict(label="Nampa, ID",
+                         method="update",
+                         args=[{"visible": [False, False, False, False, True, True]},
+                               ]),
+                    
+                ]),x=0.0,
+                    xanchor="left",
+                    y=1.1,
+                    yanchor="top"
+            )])
+
+    fig.data[0]['line_color'] = '#ff7f0e'
+    fig.data[2]['line_color'] = '#ff7f0e'
+    fig.data[4]['line_color'] = '#ff7f0e'
     fig.add_hline(y=32,line_width=1)
     fig.update_layout(hovermode='x',template="plotly_dark", hoverlabel=dict(bgcolor='rgba(255,255,255,0.75)'))
 
     fig.update_layout(margin=dict(l=50, r=1, b=80, t=50))
-    fig.add_annotation(xref="paper", x="0", yref="paper", y="-0.15",
-                       text="""<a href="https://www.weather.gov/" target="_blank">Data from the National Weather Service</a>""",
-                       showarrow=False)
+    fig.add_annotation(xref="paper", x="0", yref="paper",
+                           y="-0.15",
+                           text="""<a href="https://www.weather.gov/" target="_blank">Data from the National Weather Service</a>""",
+                           showarrow=False)
     fig.write_html("NWSforecast.html")
 except KeyError:
     pass
@@ -471,6 +558,49 @@ for i in range(int(len(t_res['articles'])/2)):
     </div>
     """
 
+FT_Text = ""
+for i in range(2):
+    if i == 0:
+        r1 = food['entries'][0]
+        r2 = food['entries'][1]
+    else:
+        r1 = trav['entries'][0]
+        r2 = trav['entries'][1]
+    FT_Text = FT_Text + f"""
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                <div class="col-sm-7 p-3 d-flex flex-column position-static">
+                    <h5 class="mb-1">
+                    <a href="{r1['links'][0]['href']}" target="_blank">{r1['title']}</a>
+                    </h5>
+                    <p class="card-text mb-auto">{r1['summary']}</p>
+                </div>
+                <div class="col-sm-5 rounded">
+                    <a href="{r1['links'][0]['href']}" target="_blank">
+                    <img class="img-fluid" src = "{r1['media_content'][0]['url']}" alt="{nope}"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                <div class="col-sm-7 p-3 d-flex flex-column position-static">
+                    <h5 class="mb-1">
+                    <a href="{r2['links'][0]['href']}" target="_blank">{r2['title']}</a>
+                    </h5>
+                    <p class="card-text mb-auto">{r2['summary']}</p>
+                </div>
+                <div class="col-sm-5 rounded">
+                    <a href="{r2['links'][0]['href']}" target="_blank">
+                    <img class="img-fluid" src = "{r2['media_content'][0]['url']}" alt="{nope}"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    """
+
 
 f_html = open('index.html','w',encoding="utf-8")
 
@@ -528,6 +658,7 @@ html_template = f"""
       <a class="p-2 link-secondary" href="#space">Space</a>
       <a class="p-2 link-secondary" href="#science">Science</a>
       <a class="p-2 link-secondary" href="#tech">Technology</a>
+      <a class="p-2 link-secondary" href="#food">Food & Travel</a>
       <a class="p-2 link-secondary" href="#weather">Weather</a>
     </nav>
   </div>
@@ -551,6 +682,11 @@ html_template = f"""
 <main class="container">
 <h3 class="py-2"><a id="tech">Technology</a></h3>
 """ + Tech_Text + f"""
+</main>
+
+<main class="container">
+<h3 class="py-2"><a id="food">Food & Travel</a></h3>
+""" + FT_Text + f"""
 </main>
 
 <main class="container">
@@ -588,9 +724,6 @@ html_template = f"""
             </div>
         </div>
     </div>
-</div>
-<div class="row mb-3 embed-responsive">
-    <iframe src='https://eyes.nasa.gov/apps/earth/#/vital-signs/air-temperature/airs-infrared-surface-3day?animating=false' height='630' scrolling='no' frameborder='0'></iframe>
 </div>
 </main>
 
