@@ -157,6 +157,8 @@ try:
                              'Dewpoint \u00B0F': [dew]})
         df3 = pd.concat([df3, temp])
 
+    dflist = [df, df2, df3]
+
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
     for d in dflist:
