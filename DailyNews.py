@@ -83,8 +83,8 @@ rfi_title = rfi['entries'][0]['title']
 rfi_main = "https://www.rfi.fr/fr/"
 
 # Get food and travel from NYTimes
-trav = feed.parse('https://www.nytimes.com/services/xml/rss/nyt/Travel.xml')
-food = feed.parse('https://rss.nytimes.com/services/xml/rss/nyt/DiningandWine.xml')
+trav = feedparser.parse('https://www.nytimes.com/services/xml/rss/nyt/Travel.xml')
+food = feedparser.parse('https://rss.nytimes.com/services/xml/rss/nyt/DiningandWine.xml')
 
 # National Weather Service 5 day forecast (3 hour intervals)
 # Current location is set to Wooster, OH. This requires
