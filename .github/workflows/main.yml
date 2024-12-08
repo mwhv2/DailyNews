@@ -4,6 +4,7 @@ name: Run Script
 
 # Controls when the workflow will run
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 11,16,21 * * *'
 
