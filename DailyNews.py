@@ -105,6 +105,12 @@ try:
 except KeyError:
     trav['entries'][1]['media_content'] = [{'url': trav_backup}]
 
+data = feedparser.parse('https://ourworldindata.org/atom-data-insights.xml')
+dlink = data['entries'][0]['link']
+dsoup = BeautifulSoup(data['entries'][0]['content'][0]['value'])
+dtext = soup.text
+dimg = dsoup.find('img')['src']
+
 # National Weather Service 5 day forecast (3 hour intervals)
 # Current location is set to Wooster, OH. This requires
 # latitude and longitude info.
@@ -708,6 +714,20 @@ html_template = f"""
 <main class="container">
 <h3 class="py-2"><a id="food">Food & Travel</a></h3>
 """ + FT_Text + f"""
+</main>
+
+<main class="container">
+<h3 class="py-2">Daily Data Insight</h3>
+<div class="row mb-3">
+            <div class="col" align="center">
+                <div class="row g-2 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center caption text-center">
+                    <a href={dlink} target="_blank">
+                    <img class="img-fluid" src = {dimg} width="60%" alt="Image not available"/>
+                     </a>
+                    <p>{dtext}</p>
+                </div>
+            </div>
+        </div>
 </main>
 
 <main class="container">
