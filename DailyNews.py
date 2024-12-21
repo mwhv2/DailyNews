@@ -83,8 +83,27 @@ rfi_title = rfi['entries'][0]['title']
 rfi_main = "https://www.rfi.fr/fr/"
 
 # Get food and travel from NYTimes
+food_backup = 'https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+trav_backup = 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
 trav = feedparser.parse('https://www.nytimes.com/services/xml/rss/nyt/Travel.xml')
 food = feedparser.parse('https://rss.nytimes.com/services/xml/rss/nyt/DiningandWine.xml')
+try:
+    food['entries'][0]['media_content'][0]['url']
+except KeyError:
+    food['entries'][0]['media_content'] = [{'url': food_backup}]
+try:
+    food['entries'][1]['media_content'][0]['url']
+except KeyError:
+    food['entries'][1]['media_content'] = [{'url': food_backup}]
+
+try:
+    trav['entries'][0]['media_content'][0]['url']
+except KeyError:
+    trav['entries'][0]['media_content'] = [{'url': trav_backup}]
+try:
+    trav['entries'][1]['media_content'][0]['url']
+except KeyError:
+    trav['entries'][1]['media_content'] = [{'url': trav_backup}]
 
 # National Weather Service 5 day forecast (3 hour intervals)
 # Current location is set to Wooster, OH. This requires
