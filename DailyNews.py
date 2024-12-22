@@ -108,7 +108,7 @@ except KeyError:
 data = feedparser.parse('https://ourworldindata.org/atom-data-insights.xml')
 dlink = data['entries'][0]['link']
 dsoup = BeautifulSoup(data['entries'][0]['content'][0]['value'])
-dtext = soup.text
+dtext = dsoup.text
 dimg = dsoup.find('img')['src']
 
 # National Weather Service 5 day forecast (3 hour intervals)
