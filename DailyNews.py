@@ -8,6 +8,7 @@ from plotly.subplots import make_subplots
 import feedparser
 import os
 from bs4 import BeautifulSoup
+import re
 
 nope = "Image not available"
 
@@ -28,9 +29,42 @@ s_url = f"https://newsapi.org/v2/top-headlines?country=us&category=science&pageS
 s_res = requests.get(s_url)
 s_res = s_res.json()
 
-t_url = f"https://newsapi.org/v2/top-headlines?sources=wired,ars-technica,engadget,ign,polygon&pageSize=6&apiKey={key}"
-t_res = requests.get(t_url)
-t_res = t_res.json()
+#Custom technology section
+wired = feedparser.parse('https://www.wired.com/feed/rss')
+ars = feedparser.parse('https://feeds.arstechnica.com/arstechnica/index')
+eng = feedparser.parse('https://www.engadget.com/rss.xml')
+
+esoup0 = BeautifulSoup(eng['entries'][0]['summary'])
+sent0 = re.split(r'[.!?]', esoup0.text)[0]
+
+esoup1 = BeautifulSoup(eng['entries'][1]['summary'])
+sent1 = re.split(r'[.!?]', esoup1.text)[0]
+
+tech = [{'title': wired['entries'][0]['title'],
+         'link': wired['entries'][0]['link'], 
+         'summary': wired['entries'][0]['summary'],
+         'url': wired['entries'][0]['media_thumbnail'][0]['url']},
+        {'title': wired['entries'][1]['title'],
+         'link': wired['entries'][1]['link'], 
+         'summary': wired['entries'][1]['summary'],
+         'url': wired['entries'][1]['media_thumbnail'][0]['url']},
+        {'title': ars['entries'][0]['title'],
+         'link': ars['entries'][0]['link'], 
+         'summary': ars['entries'][0]['summary'],
+         'url': ars['entries'][0]['media_thumbnail'][0]['url']},
+        {'title': ars['entries'][1]['title'],
+         'link': ars['entries'][1]['link'], 
+         'summary': ars['entries'][1]['summary'],
+         'url': ars['entries'][1]['media_thumbnail'][0]['url']},
+        {'title': eng['entries'][0]['title'],
+         'link': eng['entries'][0]['link'], 
+         'summary': sent0,
+         'url': eng['entries'][0]['media_content'][0]['url']},
+        {'title': eng['entries'][1]['title'],
+         'link': eng['entries'][1]['link'], 
+         'summary': sent1,
+         'url': eng['entries'][1]['media_content'][0]['url']},]
+
 
 # Space news from NASA and the ESA
 skt = feedparser.parse('https://www.universetoday.com/feed/')
@@ -547,22 +581,20 @@ for i in range(int(len(s_res['articles'])/2)):
         """
 
 Tech_Text = ""
-for i in range(int(len(t_res['articles'])/2)):
-    r1 = t_res['articles'][A[i]]
-    r2 = t_res['articles'][B[i]]
+for i in range(3):
     Tech_Text = Tech_Text + f"""
     <div class="row mb-3">
         <div class="col-md-6">
             <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                 <div class="col-sm-7 p-3 d-flex flex-column position-static">
                     <h5 class="mb-1">
-                    <a href="{r1['url']}" target="_blank">{r1['title']}</a>
+                    <a href="{tech[i]['link']}" target="_blank">{tech[i]['title']}</a>
                     </h5>
-                    <p class="card-text mb-auto">{r1['description']}</p>
+                    <p class="card-text mb-auto">{tech[i]['summary']}</p>
                 </div>
                 <div class="col-sm-5 rounded">
-                    <a href="{r1['url']}" target="_blank">
-                    <img class="img-fluid" src = "{r1['urlToImage']}" alt="{nope}"/>
+                    <a href="{tech[i]['link']}" target="_blank">
+                    <img class="img-fluid" src = "{tech[i]['url']}" alt="{nope}"/>
                     </a>
                 </div>
             </div>
@@ -571,13 +603,13 @@ for i in range(int(len(t_res['articles'])/2)):
             <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                 <div class="col-sm-7 p-3 d-flex flex-column position-static">
                     <h5 class="mb-1">
-                    <a href="{r2['url']}" target="_blank">{r2['title']}</a>
+                    <a href="{tech[i+1]['link']}" target="_blank">{tech[i+1]['title']}</a>
                     </h5>
-                    <p class="card-text mb-auto">{r2['description']}</p>
+                    <p class="card-text mb-auto">{tech[i+1]['summary']}</p>
                 </div>
                 <div class="col-sm-5 rounded">
-                    <a href="{r2['url']}" target="_blank">
-                    <img class="img-fluid" src = "{r2['urlToImage']}" alt="{nope}"/>
+                    <a href="{tech[i+1]['link']}" target="_blank">
+                    <img class="img-fluid" src = "{tech[i+1]['url']}" alt="{nope}"/>
                     </a>
                 </div>
             </div>
