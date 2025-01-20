@@ -139,6 +139,32 @@ try:
 except KeyError:
     trav['entries'][1]['media_content'] = [{'url': trav_backup}]
 
+cnn = feed.parse('http://rss.cnn.com/rss/cnn_travel.rss')
+f_n_t = [{'title': food['entries'][0]['title'],
+         'link': food['entries'][0]['link'], 
+         'summary': food['entries'][0]['summary'],
+         'url': food['entries'][0]['media_content'][0]['url']},
+        {'title': food['entries'][1]['title'],
+         'link': food['entries'][1]['link'], 
+         'summary': food['entries'][1]['summary'],
+         'url': food['entries'][0]['media_content'][0]['url']},
+        {'title': trav['entries'][0]['title'],
+         'link': trav['entries'][0]['link'], 
+         'summary': trav['entries'][0]['summary'],
+         'url': trav['entries'][0]['media_content'][0]['url']},
+        {'title': trav['entries'][1]['title'],
+         'link': trav['entries'][1]['link'], 
+         'summary': trav['entries'][1]['summary'],
+         'url': trav['entries'][0]['media_content'][0]['url']},
+        {'title': cnn['entries'][0]['title'],
+         'link': cnn['entries'][0]['link'], 
+         'summary': cnn['entries'][0]['summary'],
+         'url': cnn['entries'][0]['media_content'][0]['url']},
+        {'title': cnn['entries'][1]['title'],
+         'link': cnn['entries'][1]['link'], 
+         'summary': cnn['entries'][0]['summary'],
+         'url': cnn['entries'][0]['media_content'][0]['url']},]
+
 data = feedparser.parse('https://ourworldindata.org/atom-data-insights.xml')
 dlink = data['entries'][0]['link']
 dsoup = BeautifulSoup(data['entries'][0]['content'][0]['value'])
@@ -581,7 +607,7 @@ for i in range(int(len(s_res['articles'])/2)):
         """
 
 Tech_Text = ""
-for i in range(3):
+for i in [0, 2, 4]:
     Tech_Text = Tech_Text + f"""
     <div class="row mb-3">
         <div class="col-md-6">
@@ -618,26 +644,20 @@ for i in range(3):
     """
 
 FT_Text = ""
-for i in range(2):
-    if i == 0:
-        r1 = food['entries'][0]
-        r2 = food['entries'][1]
-    else:
-        r1 = trav['entries'][0]
-        r2 = trav['entries'][1]
+for i in [0, 2, 4]:
     FT_Text = FT_Text + f"""
     <div class="row mb-3">
         <div class="col-md-6">
             <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                 <div class="col-sm-7 p-3 d-flex flex-column position-static">
                     <h5 class="mb-1">
-                    <a href="{r1['links'][0]['href']}" target="_blank">{r1['title']}</a>
+                    <a href="{tech[i]['link']}" target="_blank">{tech[i]['title']}</a>
                     </h5>
-                    <p class="card-text mb-auto">{r1['summary']}</p>
+                    <p class="card-text mb-auto">{tech[i]['summary']}</p>
                 </div>
                 <div class="col-sm-5 rounded">
-                    <a href="{r1['links'][0]['href']}" target="_blank">
-                    <img class="img-fluid" src = "{r1['media_content'][0]['url']}" alt="{nope}"/>
+                    <a href="{tech[i]['link']}" target="_blank">
+                    <img class="img-fluid" src = "{tech[i]['url']}" alt="{nope}"/>
                     </a>
                 </div>
             </div>
@@ -646,13 +666,13 @@ for i in range(2):
             <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                 <div class="col-sm-7 p-3 d-flex flex-column position-static">
                     <h5 class="mb-1">
-                    <a href="{r2['links'][0]['href']}" target="_blank">{r2['title']}</a>
+                    <a href="{tech[i+1]['link']}" target="_blank">{tech[i+1]['title']}</a>
                     </h5>
-                    <p class="card-text mb-auto">{r2['summary']}</p>
+                    <p class="card-text mb-auto">{tech[i+1]['summary']}</p>
                 </div>
                 <div class="col-sm-5 rounded">
-                    <a href="{r2['links'][0]['href']}" target="_blank">
-                    <img class="img-fluid" src = "{r2['media_content'][0]['url']}" alt="{nope}"/>
+                    <a href="{tech[i+1]['link']}" target="_blank">
+                    <img class="img-fluid" src = "{tech[i+1]['url']}" alt="{nope}"/>
                     </a>
                 </div>
             </div>
