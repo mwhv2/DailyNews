@@ -139,7 +139,7 @@ try:
 except KeyError:
     trav['entries'][1]['media_content'] = [{'url': trav_backup}]
 
-cnn = feed.parse('http://rss.cnn.com/rss/cnn_travel.rss')
+cnn = feedparser.parse('http://rss.cnn.com/rss/cnn_travel.rss')
 f_n_t = [{'title': food['entries'][0]['title'],
          'link': food['entries'][0]['link'], 
          'summary': food['entries'][0]['summary'],
@@ -651,13 +651,13 @@ for i in [0, 2, 4]:
             <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                 <div class="col-sm-7 p-3 d-flex flex-column position-static">
                     <h5 class="mb-1">
-                    <a href="{tech[i]['link']}" target="_blank">{tech[i]['title']}</a>
+                    <a href="{f_n_t[i]['link']}" target="_blank">{f_n_t[i]['title']}</a>
                     </h5>
-                    <p class="card-text mb-auto">{tech[i]['summary']}</p>
+                    <p class="card-text mb-auto">{f_n_t[i]['summary']}</p>
                 </div>
                 <div class="col-sm-5 rounded">
-                    <a href="{tech[i]['link']}" target="_blank">
-                    <img class="img-fluid" src = "{tech[i]['url']}" alt="{nope}"/>
+                    <a href="{f_n_t[i]['link']}" target="_blank">
+                    <img class="img-fluid" src = "{f_n_t[i]['url']}" alt="{nope}"/>
                     </a>
                 </div>
             </div>
@@ -666,13 +666,13 @@ for i in [0, 2, 4]:
             <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                 <div class="col-sm-7 p-3 d-flex flex-column position-static">
                     <h5 class="mb-1">
-                    <a href="{tech[i+1]['link']}" target="_blank">{tech[i+1]['title']}</a>
+                    <a href="{f_n_t[i+1]['link']}" target="_blank">{f_n_t[i+1]['title']}</a>
                     </h5>
-                    <p class="card-text mb-auto">{tech[i+1]['summary']}</p>
+                    <p class="card-text mb-auto">{f_n_t[i+1]['summary']}</p>
                 </div>
                 <div class="col-sm-5 rounded">
-                    <a href="{tech[i+1]['link']}" target="_blank">
-                    <img class="img-fluid" src = "{tech[i+1]['url']}" alt="{nope}"/>
+                    <a href="{f_n_t[i+1]['link']}" target="_blank">
+                    <img class="img-fluid" src = "{f_n_t[i+1]['url']}" alt="{nope}"/>
                     </a>
                 </div>
             </div>
