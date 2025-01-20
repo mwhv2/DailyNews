@@ -147,7 +147,7 @@ f_n_t = [{'title': food['entries'][0]['title'],
         {'title': food['entries'][1]['title'],
          'link': food['entries'][1]['link'], 
          'summary': food['entries'][1]['summary'],
-         'url': food['entries'][0]['media_content'][0]['url']},
+         'url': food['entries'][1]['media_content'][0]['url']},
         {'title': trav['entries'][0]['title'],
          'link': trav['entries'][0]['link'], 
          'summary': trav['entries'][0]['summary'],
@@ -155,15 +155,15 @@ f_n_t = [{'title': food['entries'][0]['title'],
         {'title': trav['entries'][1]['title'],
          'link': trav['entries'][1]['link'], 
          'summary': trav['entries'][1]['summary'],
-         'url': trav['entries'][0]['media_content'][0]['url']},
+         'url': trav['entries'][1]['media_content'][0]['url']},
         {'title': cnn['entries'][0]['title'],
          'link': cnn['entries'][0]['link'], 
          'summary': cnn['entries'][0]['summary'],
          'url': cnn['entries'][0]['media_content'][0]['url']},
         {'title': cnn['entries'][1]['title'],
          'link': cnn['entries'][1]['link'], 
-         'summary': cnn['entries'][0]['summary'],
-         'url': cnn['entries'][0]['media_content'][0]['url']},]
+         'summary': cnn['entries'][1]['summary'],
+         'url': cnn['entries'][1]['media_content'][0]['url']},]
 
 data = feedparser.parse('https://ourworldindata.org/atom-data-insights.xml')
 dlink = data['entries'][0]['link']
