@@ -139,7 +139,12 @@ try:
 except KeyError:
     trav['entries'][1]['media_content'] = [{'url': trav_backup}]
 
-cnn = feedparser.parse('http://rss.cnn.com/rss/cnn_travel.rss')
+nbc = feedparser.parse('"https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000739"')
+trav_backup1 = "https://images.pexels.com/photos/1275393/pexels-photo-1275393.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+trav_backup2 = "https://images.pexels.com/photos/46148/aircraft-jet-landing-cloud-46148.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+nbc['entries'][0]['media_content'] = [{'url': trav_backup1}]
+nbc['entries'][1]['media_content'] = [{'url': trav_backup2}]
+
 f_n_t = [{'title': food['entries'][0]['title'],
          'link': food['entries'][0]['link'], 
          'summary': food['entries'][0]['summary'],
@@ -156,14 +161,14 @@ f_n_t = [{'title': food['entries'][0]['title'],
          'link': trav['entries'][1]['link'], 
          'summary': trav['entries'][1]['summary'],
          'url': trav['entries'][1]['media_content'][0]['url']},
-        {'title': cnn['entries'][0]['title'],
-         'link': cnn['entries'][0]['link'], 
-         'summary': cnn['entries'][0]['summary'],
-         'url': cnn['entries'][0]['media_content'][0]['url']},
-        {'title': cnn['entries'][1]['title'],
-         'link': cnn['entries'][1]['link'], 
-         'summary': cnn['entries'][1]['summary'],
-         'url': cnn['entries'][1]['media_content'][0]['url']},]
+        {'title': nbc['entries'][0]['title'],
+         'link': nbc['entries'][0]['link'], 
+         'summary': nbc['entries'][0]['summary'],
+         'url': nbc['entries'][0]['media_content'][0]['url']},
+        {'title': nbc['entries'][1]['title'],
+         'link': nbc['entries'][1]['link'], 
+         'summary': nbc['entries'][1]['summary'],
+         'url': nbc['entries'][1]['media_content'][0]['url']},]
 
 data = feedparser.parse('https://ourworldindata.org/atom-data-insights.xml')
 dlink = data['entries'][0]['link']
