@@ -139,7 +139,7 @@ try:
 except KeyError:
     trav['entries'][1]['media_content'] = [{'url': trav_backup}]
 
-nbc = feedparser.parse('"https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000739"')
+nbc = feedparser.parse('https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000739')
 trav_backup1 = "https://images.pexels.com/photos/1275393/pexels-photo-1275393.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
 trav_backup2 = "https://images.pexels.com/photos/46148/aircraft-jet-landing-cloud-46148.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
 nbc['entries'][0]['media_content'] = [{'url': trav_backup1}]
