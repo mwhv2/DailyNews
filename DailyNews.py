@@ -49,7 +49,7 @@ image = csoup.find('img')
 conv['entries'][1]['urlToImage'] = image['src']
 conv['entries'][1]['description'] = csoup.find('p').text
 
-smith = feed.parse('https://www.smithsonianmag.com/rss/latest_articles/')
+smith = feedparser.parse('https://www.smithsonianmag.com/rss/latest_articles/')
 smith['entries'][0]['description'] = smith['entries'][0]['summary']
 smith['entries'][0]['urlToImage'] = smith['entries'][0]['links'][1]['href']
 smith['entries'][1]['description'] = smith['entries'][1]['summary']
