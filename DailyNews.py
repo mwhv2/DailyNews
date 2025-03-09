@@ -25,19 +25,49 @@ re1_url = f"https://newsapi.org/v2/top-headlines?sources=associated-press,bbc-ne
 response = requests.get(re1_url)
 response = response.json()
 
-s_url = f"https://newsapi.org/v2/top-headlines?country=us&category=science&pageSize=6&apiKey={key}"
-s_res = requests.get(s_url)
-s_res = s_res.json()
+##s_url = f"https://newsapi.org/v2/top-headlines?country=us&category=science&pageSize=6&apiKey={key}"
+##s_res = requests.get(s_url)
+##s_res = s_res.json()
+
+sci = feedparser.parse('https://www.sciencealert.com/feed')
+scsoup = BeautifulSoup(sci['entries'][0]['summary'], 'lxml')
+image = scsoup.find('img')
+sci['entries'][0]['urlToImage'] = image['src']
+sci['entries'][0]['description'] = scsoup.text
+scsoup = BeautifulSoup(sci['entries'][1]['summary'], 'lxml')
+image = scsoup.find('img')
+sci['entries'][1]['urlToImage'] = image['src']
+sci['entries'][1]['description'] = scsoup.text
+
+conv = feedparser.parse('https://theconversation.com/us/articles.atom')
+csoup = BeautifulSoup(conv['entries'][0]['summary'], 'lxml')
+image = csoup.find('img')
+conv['entries'][0]['urlToImage'] = image['src']
+conv['entries'][0]['description'] = csoup.find('p').text
+csoup = BeautifulSoup(conv['entries'][1]['summary'], 'lxml')
+image = csoup.find('img')
+conv['entries'][1]['urlToImage'] = image['src']
+conv['entries'][1]['description'] = csoup.find('p').text
+
+smith = feed.parse('https://www.smithsonianmag.com/rss/latest_articles/')
+smith['entries'][0]['description'] = smith['entries'][0]['summary']
+smith['entries'][0]['urlToImage'] = smith['entries'][0]['links'][1]['href']
+smith['entries'][1]['description'] = smith['entries'][1]['summary']
+smith['entries'][1]['urlToImage'] = smith['entries'][1]['links'][1]['href']
+
+s_res = [sci['entries'][0], sci['entries'][1],
+         conv['entries'][0], conv['entries'][1],
+         smith['entries'][0], smith['entries'][1]]
 
 #Custom technology section
 wired = feedparser.parse('https://www.wired.com/feed/rss')
 ars = feedparser.parse('https://feeds.arstechnica.com/arstechnica/index')
 eng = feedparser.parse('https://www.engadget.com/rss.xml')
 
-esoup0 = BeautifulSoup(eng['entries'][0]['summary'])
+esoup0 = BeautifulSoup(eng['entries'][0]['summary'], 'lxml')
 sent0 = re.split(r'[.!?]', esoup0.text)[0]
 
-esoup1 = BeautifulSoup(eng['entries'][1]['summary'])
+esoup1 = BeautifulSoup(eng['entries'][1]['summary'], 'lxml')
 sent1 = re.split(r'[.!?]', esoup1.text)[0]
 
 tech = [{'title': wired['entries'][0]['title'],
@@ -71,6 +101,13 @@ skt = feedparser.parse('https://www.universetoday.com/feed/')
 nasa = feedparser.parse("https://www.nasa.gov/rss/dyn/breaking_news.rss")
 spc = feedparser.parse('https://www.space.com/home/feed/site.xml')
 apod = feedparser.parse("https://apod.pixelweben.de/rss_en.xml")
+usoup0 = BeautifulSoup(skt['entries'][0]['summary'], 'lxml')
+usoup1 = BeautifulSoup(skt['entries'][1]['summary'], 'lxml')
+image0 = usoup0.find('img')
+image1 = usoup1.find('img')
+skt['entries'][0]['media_content'] = [{'url': image0['src']}]
+skt['entries'][1]['media_content'] = [{'url': image1['src']}]
+
 space = skt['entries'][:2] + nasa['entries'][:2] + spc['entries'][:2]
 apod = apod['entries'][0]
 apod_soup = BeautifulSoup(apod['summary'], 'lxml')
@@ -535,9 +572,9 @@ for i in range(4):
 A = [0,2,4,6,8]
 B = [1,3,5,7,9]
 Science_Text = ""
-for i in range(int(len(s_res['articles'])/2)):
-    r1 = s_res['articles'][A[i]]
-    r2 = s_res['articles'][B[i]]
+for i in range(int(len(s_res)/2)):
+    r1 = s_res[A[i]]
+    r2 = s_res[B[i]]
     if i == 3:
         Science_Text = Science_Text + f"""
         <div class="row mb-3">
@@ -582,12 +619,12 @@ for i in range(int(len(s_res['articles'])/2)):
                 <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                     <div class="col-sm-7 p-3 d-flex flex-column position-static">
                         <h5 class="mb-1">
-                        <a href="{r1['url']}" target="_blank">{r1['title']}</a>
+                        <a href="{r1['link']}" target="_blank">{r1['title']}</a>
                         </h5>
                         <p class="card-text mb-auto">{r1['description']}</p>
                     </div>
                     <div class="col-sm-5 rounded">
-                        <a href="{r1['url']}" target="_blank">
+                        <a href="{r1['link']}" target="_blank">
                         <img class="img-fluid" src = "{r1['urlToImage']}" alt="{nope}"/>
                         </a>
                     </div>
@@ -597,12 +634,12 @@ for i in range(int(len(s_res['articles'])/2)):
                 <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
                     <div class="col-sm-7 p-3 d-flex flex-column position-static">
                         <h5 class="mb-1">
-                        <a href="{r2['url']}" target="_blank">{r2['title']}</a>
+                        <a href="{r2['link']}" target="_blank">{r2['title']}</a>
                         </h5>
                         <p class="card-text mb-auto">{r2['description']}</p>
                     </div>
                     <div class="col-sm-5 rounded">
-                        <a href="{r2['url']}" target="_blank">
+                        <a href="{r2['link']}" target="_blank">
                         <img class="img-fluid" src = "{r2['urlToImage']}" alt="{nope}"/>
                         </a>
                     </div>
@@ -740,7 +777,7 @@ html_template = f"""
     <nav class="nav d-flex justify-content-between">
       <a class="p-2 link-secondary" href="#top">Headlines</a>
       <a class="p-2 link-secondary" href="#space">Space</a>
-      <a class="p-2 link-secondary" href="#science">Science</a>
+      <a class="p-2 link-secondary" href="#science">Science & Arts</a>
       <a class="p-2 link-secondary" href="#tech">Technology</a>
       <a class="p-2 link-secondary" href="#food">Food & Travel</a>
       <a class="p-2 link-secondary" href="#weather">Weather</a>
@@ -759,7 +796,7 @@ html_template = f"""
 </main>
 
 <main class="container">
-<h3 class="py-2"><a id="science">Science</a></h3>
+<h3 class="py-2"><a id="science">Science & Arts</a></h3>
 """ + Science_Text + f"""
 </main>
 
