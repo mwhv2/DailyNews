@@ -6,7 +6,7 @@ name: Run Script
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 11,16,21 * * *'
+    - cron: '0 11,21 * * *'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
