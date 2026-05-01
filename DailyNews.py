@@ -60,7 +60,6 @@ s_res = [sci['entries'][0], sci['entries'][1],
          smith['entries'][0], smith['entries'][1]]
 
 #Custom technology section
-wired = feedparser.parse('https://www.wired.com/feed/rss')
 ars = feedparser.parse('https://feeds.arstechnica.com/arstechnica/index')
 eng = feedparser.parse('https://www.engadget.com/rss.xml')
 
@@ -70,15 +69,7 @@ sent0 = re.split(r'[.!?]', esoup0.text)[0]
 esoup1 = BeautifulSoup(eng['entries'][1]['summary'], 'lxml')
 sent1 = re.split(r'[.!?]', esoup1.text)[0]
 
-tech = [{'title': wired['entries'][0]['title'],
-         'link': wired['entries'][0]['link'], 
-         'summary': wired['entries'][0]['summary'],
-         'url': wired['entries'][0]['media_thumbnail'][0]['url']},
-        {'title': wired['entries'][1]['title'],
-         'link': wired['entries'][1]['link'], 
-         'summary': wired['entries'][1]['summary'],
-         'url': wired['entries'][1]['media_thumbnail'][0]['url']},
-        {'title': ars['entries'][0]['title'],
+tech = [{'title': ars['entries'][0]['title'],
          'link': ars['entries'][0]['link'], 
          'summary': ars['entries'][0]['summary'],
          'url': ars['entries'][0]['media_thumbnail'][0]['url']},
@@ -89,11 +80,11 @@ tech = [{'title': wired['entries'][0]['title'],
         {'title': eng['entries'][0]['title'],
          'link': eng['entries'][0]['link'], 
          'summary': sent0,
-         'url': eng['entries'][0]['media_content'][0]['url']},
+         'url': eng['entries'][0]['media_thumbnail'][0]['url']},
         {'title': eng['entries'][1]['title'],
          'link': eng['entries'][1]['link'], 
          'summary': sent1,
-         'url': eng['entries'][1]['media_content'][0]['url']},]
+         'url': eng['entries'][1]['media_thumbnail'][0]['url']},]
 
 
 # Space news from NASA and the ESA
@@ -120,28 +111,6 @@ npr_url = npr['entries'][0]['links'][0]['href']
 npr_title = npr['entries'][0]['title']
 npr_main = "https://www.npr.org/"
 
-# Get the more recent Short Wave podcast
-short = feedparser.parse("https://feeds.npr.org/510351/podcast.xml")
-short_img = "https://media.npr.org/assets/img/2022/09/23/short-wave_tile_npr-network-01_sq-517382b4b8fd0ab48ea9c781253f9992eab733dc.jpg?s=400&c=85&f=webp"
-try:
-    short_url = short['entries'][0]['links'][1]['href']
-except IndexError:
-    short_url = short['entries'][0]['links'][0]['href']
-short_title = short['entries'][0]['title']
-short_trans = short['entries'][0]['links'][0]['href']
-short_main = "https://www.npr.org/podcasts/510351/short-wave"
-
-# Get most recent Scientific American 60-second science podcast
-sciam = feedparser.parse("http://rss.sciam.com/sciam/60secsciencepodcast?format=xml")
-sciam_img = "https://static.scientificamerican.com/sciam/cache/file/6E8467DF-0688-4D4F-95E46E6B82CC3912_source.jpg"
-try:
-    sciam_url = sciam['entries'][0]['links'][0]['href']
-except IndexError:
-    sciam_url = sciam['entries'][1]['links'][1]['href']
-sciam_title = sciam['entries'][0]['title']
-sciam_trans = sciam['entries'][0]['links'][0]['href']
-sciam_main = "https://www.scientificamerican.com/"
-
 # Get the hourly French news from rfi.fr
 try:
     rfi = feedparser.parse("https://www.rfi.fr/fr/podcasts/journal-fran%C3%A7ais-facile/podcast")
@@ -156,8 +125,10 @@ rfi_main = "https://www.rfi.fr/fr/"
 # Get food and travel from NYTimes
 food_backup = 'https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
 trav_backup = 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-trav = feedparser.parse('https://www.nytimes.com/services/xml/rss/nyt/Travel.xml')
+
 food = feedparser.parse('https://rss.nytimes.com/services/xml/rss/nyt/DiningandWine.xml')
+fr = feedparser.parse('https://www.france24.com/en/culture/rss')
+
 try:
     food['entries'][0]['media_content'][0]['url']
 except KeyError:
@@ -167,20 +138,8 @@ try:
 except KeyError:
     food['entries'][1]['media_content'] = [{'url': food_backup}]
 
-try:
-    trav['entries'][0]['media_content'][0]['url']
-except KeyError:
-    trav['entries'][0]['media_content'] = [{'url': trav_backup}]
-try:
-    trav['entries'][1]['media_content'][0]['url']
-except KeyError:
-    trav['entries'][1]['media_content'] = [{'url': trav_backup}]
 
-nbc = feedparser.parse('https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000739')
-trav_backup1 = "https://images.pexels.com/photos/1275393/pexels-photo-1275393.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-trav_backup2 = "https://images.pexels.com/photos/46148/aircraft-jet-landing-cloud-46148.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-nbc['entries'][0]['media_content'] = [{'url': trav_backup1}]
-nbc['entries'][1]['media_content'] = [{'url': trav_backup2}]
+cle = feedparser.parse('https://www.cleveland.com/arc/outboundfeeds/rss/?outputType=xml')
 
 f_n_t = [{'title': food['entries'][0]['title'],
          'link': food['entries'][0]['link'], 
@@ -190,26 +149,26 @@ f_n_t = [{'title': food['entries'][0]['title'],
          'link': food['entries'][1]['link'], 
          'summary': food['entries'][1]['summary'],
          'url': food['entries'][1]['media_content'][0]['url']},
-        {'title': trav['entries'][0]['title'],
-         'link': trav['entries'][0]['link'], 
-         'summary': trav['entries'][0]['summary'],
-         'url': trav['entries'][0]['media_content'][0]['url']},
-        {'title': trav['entries'][1]['title'],
-         'link': trav['entries'][1]['link'], 
-         'summary': trav['entries'][1]['summary'],
-         'url': trav['entries'][1]['media_content'][0]['url']},
-        {'title': nbc['entries'][0]['title'],
-         'link': nbc['entries'][0]['link'], 
-         'summary': nbc['entries'][0]['summary'],
-         'url': nbc['entries'][0]['media_content'][0]['url']},
-        {'title': nbc['entries'][1]['title'],
-         'link': nbc['entries'][1]['link'], 
-         'summary': nbc['entries'][1]['summary'],
-         'url': nbc['entries'][1]['media_content'][0]['url']},]
+        {'title': fr['entries'][0]['title'],
+         'link': fr['entries'][0]['link'], 
+         'summary': fr['entries'][0]['summary'],
+         'url': fr['entries'][0]['media_thumbnail'][0]['url']},
+        {'title': fr['entries'][1]['title'],
+         'link': fr['entries'][1]['link'], 
+         'summary': fr['entries'][1]['summary'],
+         'url': fr['entries'][1]['media_thumbnail'][0]['url']},
+        {'title': cle['entries'][0]['title'],
+         'link': cle['entries'][0]['link'], 
+         'summary': cle['entries'][0]['summary'],
+         'url': cle['entries'][0]['media_content'][0]['url']},
+        {'title': cle['entries'][1]['title'],
+         'link': cle['entries'][1]['link'], 
+         'summary': cle['entries'][1]['summary'],
+         'url': cle['entries'][1]['media_content'][0]['url']},]
 
 data = feedparser.parse('https://ourworldindata.org/atom-data-insights.xml')
 dlink = data['entries'][0]['link']
-dsoup = BeautifulSoup(data['entries'][0]['content'][0]['value'])
+dsoup = BeautifulSoup(data['entries'][0]['content'][0]['value'], 'lxml')
 dtext = dsoup.text
 dimg = dsoup.find('img')['src']
 
@@ -575,81 +534,43 @@ Science_Text = ""
 for i in range(int(len(s_res)/2)):
     r1 = s_res[A[i]]
     r2 = s_res[B[i]]
-    if i == 3:
-        Science_Text = Science_Text + f"""
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
-                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
-                        <h5 class="mb-1">
-                        <a href="{short_main}" target="_blank">{short_title}</a>
-                        </h5>
-                        <p class="card-text mb-auto">New discoveries, everyday mysteries, and the science behind the headlines — all in about 10 minutes, every weekday. \
-                        <a href="{short_trans}" target="_blank">Transcript</a><audio controls><source src="{short_url}" type="audio/mpeg"></audio></p>
-                    </div>
-                    <div class="col-sm-5 rounded">
-                        <a href="{short_main}" target="_blank">
-                        <img class="img-fluid" src = "{short_img}" alt="{nope}"/>
-                        </a>
-                    </div>
+    Science_Text = Science_Text + f"""
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                <div class="col-sm-7 p-3 d-flex flex-column position-static">
+                    <h5 class="mb-1">
+                    <a href="{r1['link']}" target="_blank">{r1['title']}</a>
+                    </h5>
+                    <p class="card-text mb-auto">{r1['description']}</p>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
-                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
-                        <h5 class="mb-1">
-                        <a href="{sciam_main}" target="_blank">{sciam_title}</a>
-                        </h5>
-                        <p class="card-text mb-auto">Tune in every week for rapid reports from the world of science—we'll make it quick and fascinating. \
-                        <a href="{sciam_trans}" target="_blank">Transcript</a><audio controls><source src="{sciam_url}" type="audio/mpeg"></audio></p>
-                    </div>
-                    <div class="col-sm-5 rounded">
-                        <a href="{sciam_main}" target="_blank">
-                        <img class="img-fluid" src = "{sciam_img}" alt="{nope}"/>
-                        </a>
-                    </div>
+                <div class="col-sm-5 rounded">
+                    <a href="{r1['link']}" target="_blank">
+                    <img class="img-fluid" src = "{r1['urlToImage']}" alt="{nope}"/>
+                    </a>
                 </div>
             </div>
         </div>
-        """
-    else:
-        Science_Text = Science_Text + f"""
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
-                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
-                        <h5 class="mb-1">
-                        <a href="{r1['link']}" target="_blank">{r1['title']}</a>
-                        </h5>
-                        <p class="card-text mb-auto">{r1['description']}</p>
-                    </div>
-                    <div class="col-sm-5 rounded">
-                        <a href="{r1['link']}" target="_blank">
-                        <img class="img-fluid" src = "{r1['urlToImage']}" alt="{nope}"/>
-                        </a>
-                    </div>
+        <div class="col-md-6">
+            <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
+                <div class="col-sm-7 p-3 d-flex flex-column position-static">
+                    <h5 class="mb-1">
+                    <a href="{r2['link']}" target="_blank">{r2['title']}</a>
+                    </h5>
+                    <p class="card-text mb-auto">{r2['description']}</p>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="row g-0 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-300 position-relative align-items-center">
-                    <div class="col-sm-7 p-3 d-flex flex-column position-static">
-                        <h5 class="mb-1">
-                        <a href="{r2['link']}" target="_blank">{r2['title']}</a>
-                        </h5>
-                        <p class="card-text mb-auto">{r2['description']}</p>
-                    </div>
-                    <div class="col-sm-5 rounded">
-                        <a href="{r2['link']}" target="_blank">
-                        <img class="img-fluid" src = "{r2['urlToImage']}" alt="{nope}"/>
-                        </a>
-                    </div>
+                <div class="col-sm-5 rounded">
+                    <a href="{r2['link']}" target="_blank">
+                    <img class="img-fluid" src = "{r2['urlToImage']}" alt="{nope}"/>
+                    </a>
                 </div>
             </div>
         </div>
-        """
+    </div>
+    """
 
 Tech_Text = ""
-for i in [0, 2, 4]:
+for i in [0, 2]:
     Tech_Text = Tech_Text + f"""
     <div class="row mb-3">
         <div class="col-md-6">
