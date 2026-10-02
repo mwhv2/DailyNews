@@ -491,7 +491,7 @@ for i in range(4):
                     </div>
                     <div class="col-sm-5 rounded">
                         <a href="{r1['link']}" target="_blank">
-                        <img class="img-fluid" src = "{r1['links'][1]['href']}" alt="{nope}"/>
+                        <img class="img-fluid" src = "{r1['media_thumbnail'][0]['url']}" alt="{nope}"/>
                         </a>
                     </div>
                 </div>
@@ -506,7 +506,7 @@ for i in range(4):
                     </div>
                     <div class="col-sm-5 rounded">
                         <a href="{r2['link']}" target="_blank">
-                        <img class="img-fluid" src = "{r2['links'][1]['href']}" alt="{nope}"/>
+                        <img class="img-fluid" src = "{r2['media_thumbnail'][0]['url']}" alt="{nope}"/>
                         </a>
                     </div>
                 </div>
