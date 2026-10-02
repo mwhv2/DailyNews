@@ -90,7 +90,7 @@ tech = [{'title': ars['entries'][0]['title'],
 # Space news from NASA and the ESA
 skt = feedparser.parse('https://www.universetoday.com/feed/')
 nasa = feedparser.parse("https://www.nasa.gov/rss/dyn/breaking_news.rss")
-spc = feedparser.parse('https://www.space.com/home/feed/site.xml')
+spc = feedparser.parse('https://phys.org/rss-feed/space-news/')
 apod = feedparser.parse("https://apod.pixelweben.de/rss_en.xml")
 usoup0 = BeautifulSoup(skt['entries'][0]['summary'], 'lxml')
 usoup1 = BeautifulSoup(skt['entries'][1]['summary'], 'lxml')
