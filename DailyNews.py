@@ -433,8 +433,12 @@ for i in range(4):
         </div>
         """
     if i == 1:
-        string1 = BeautifulSoup(r1['content'][0]['value'])
-        string2 = BeautifulSoup(r2['content'][0]['value'])
+        try:
+            string1 = BeautifulSoup(r1['content'][0]['value'])
+            string2 = BeautifulSoup(r2['content'][0]['value'])
+        except KeyError:
+            img1 = "https://www.nasa.gov/wp-content/uploads/2023/04/nasa-logo-web-rgb.png"
+            img2 = "https://www.nasa.gov/wp-content/uploads/2023/04/nasa-logo-web-rgb.png" 
         try:
             img1 = string1.find('img')['src']
         except TypeError:
