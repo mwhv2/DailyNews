@@ -24,7 +24,7 @@ jobs:
       - name: setup python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9.14'
+          python-version: '3.13.17'
           
       - name: install python packages
         run: |
